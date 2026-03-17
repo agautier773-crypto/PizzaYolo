@@ -39,8 +39,13 @@ services:
       # [chemin_hote:chemin_conteneur] represente un volume en "bind mount" c'est a dire que le dossier hote et conteneur sont synchroniser en temps réel (hotloader++) utiliser pour le code source
       # [nom_volume:chemin_conteneur] represente un volume nommée (pour du stockage persistant) il est gerer par dockerutilisé pour stocker la donnée
     volumes:
-      - todolist_data:/var/lib/mysql # persistancedes données (avec un volume nommé)
+      - pizzayolo_data:/var/lib/mysql # persistancedes données (avec un volume nommé)
       - ./init-db:/docker-entrypoint-initdb.d # utilise les fichiers .sql dans init-db pour hydrater la bdd
+    ports:
+      # ATTENTION : redirection uniquement pour pouvoir se connecter
+      # via un client lourd
+      # Commenter la redirection pour passage en production.
+      - "3350:3306"
     # phpmyadmin (pma)
     # interface web pour la gestion de la base de données
   phpmyadmin:
@@ -59,7 +64,7 @@ services:
 
 # déclaration des volumes a docker
 volumes:
-  todolist_data: # on indique le nom du volume que docker doit utiliser
+  pizzayolo_data: # on indique le nom du volume que docker doit utiliser
 
 # config rzo pour docker
 networks:
