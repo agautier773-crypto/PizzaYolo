@@ -1,5 +1,6 @@
 Create Database IF NOT EXISTS PizzaYolo;
-use PizzaYolo
+GRANT ALL PRIVILEGES ON PizzaYolo.* TO 'lambdas'@'%';
+use PizzaYolo;
 
 CREATE TABLE IF NOT EXISTS client(
    id_client INT AUTO_INCREMENT,
@@ -48,3 +49,4 @@ CREATE TABLE IF NOT EXISTS commande_pizza(
    FOREIGN KEY(id_pizza) REFERENCES pizza(id_pizza),
    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
 )ENGINE=InnoDB;
+

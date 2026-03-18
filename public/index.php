@@ -20,7 +20,9 @@ $router -> addMiddleware([
 ]);
 $router
    // ajout des routes
-    ->get("/", App\Controllers\HomepageController::class ."::home")
+    ->get("/", App\Controllers\CommandeController::class ."::home")
+    ->get("/show/{id}", App\Controllers\CommandeController::class ."::show")
+
 
 
     ->get("/login", App\Controllers\AuthController::class . "::login")

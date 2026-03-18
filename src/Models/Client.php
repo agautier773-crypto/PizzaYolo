@@ -9,7 +9,8 @@ class Client extends Model{
 
     use HasRelationships;
 
-    public ?int $id;
+    public static string $primaryKey = "id_client";
+    public ?int $id_client = null;
 
     public string $nom = "";
 

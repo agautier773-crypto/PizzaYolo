@@ -8,7 +8,9 @@ use App\Core\Traits\HasRelationships;
 class Employe extends Model{
     use HasRelationships;
 
-    public ?int $id;
+    public static string $primaryKey = "id_employe";
+
+    public ?int $id_employe = null;
 
     public string $nom = "";
 

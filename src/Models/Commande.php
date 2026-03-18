@@ -9,7 +9,10 @@ use App\Enum;
 class Commande extends Model{
     use HasRelationships;
 
-    public ?int $id;
+    public static string $primaryKey = "id_commande";
+    public ?int $id_commande = null;
+    public ?int $id_client = null;
+    public ?int $id_employe = null;
 
     public string $date = "";
 
@@ -21,6 +24,8 @@ class Commande extends Model{
         "date",
         "etat",
         "montant",
+        "id_client",
+        "id_employe",
     ];
 
     public function pizza(){
@@ -28,19 +33,19 @@ class Commande extends Model{
     }
 
     public function client(){
-        return $this->hasMany(Client::class, "id_client");
+        return $this->belongsTo(Client::class, "id_client");
     }
 
     public function employe(){
-        return $this->hasMany(Employe::class, "id_employe");
+        return $this->belongsTo(Employe::class, "id_employe");
     }
 
-    public function getNamedPizza(){
-        $namedPizza = [];
-        foreach ($this->pizza() as $pizzas){
-            $namedPizza[] = $pizzas -> nom;
+    public function getNamedClient(){
+        $namedClient = [];
+        foreach ($this->client() as $clients){
+            $namedClient[] = $clients -> nom;
         }
-        return $namedPizza;
+        return $namedClient;
     }
 
 }

@@ -7,7 +7,9 @@ use App\Core\Traits\HasRelationships;
 class Pizza extends Model{
     use HasRelationships;
 
-    public ?int $id;
+    public static string $primaryKey = "id_pizza";
+
+    public ?int $id_pizza = null;
 
     public string $nom = "";
 
@@ -15,16 +17,12 @@ class Pizza extends Model{
 
     public bool $statut = true;
 
-    public float $montant = 0;
+    public float $prix = 0;
 
     public array $fillable = [
         "nom",
         "ingredients",
         "statut",
-        "montant",
+        "prix",
     ];
-
-    public function commande(){
-        return $this->belongsToMany(Commande::class, "commande_pizza");
-    }
 }
