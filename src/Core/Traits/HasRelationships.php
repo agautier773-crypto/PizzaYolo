@@ -27,12 +27,13 @@ trait HasRelationships {
      * @return Model|array
      */
     public function belongsToMany(string $targetClass, string $pivotTable):Model|array{
+        $targetPk = static::$primaryKey;
         $targetTable =  (new $targetClass())->getNameTable();
-        $foreignKey = $this->getNameTable() . "_id";
-        $targetKey = $targetTable . "_id";
+        $foreignKey =  "id_" . $this->getNameTable();
+        $targetKey = "id_" . $targetTable;
         $sql = "SELECT {$targetTable}.* FROM {$targetTable} JOIN {$pivotTable} 
-            ON {$targetTable}.id = {$pivotTable}.{$targetKey} WHERE {$pivotTable}.{$foreignKey} = :id";
-        return $this->readQuery($sql, ["id" => $this->id], false, $targetClass);
+            ON {$targetTable}.{$targetKey} = {$pivotTable}.{$targetKey} WHERE {$pivotTable}.{$foreignKey} = :id";
+        return $this->readQuery($sql, ["id" => $this->$targetPk], false, $targetClass);
     }
 
     /**
@@ -59,7 +60,8 @@ trait HasRelationships {
     public function belongsTo(string $targetClass, string $foreignKey):Model|array|bool
     {
         $targetTable = (new $targetClass())->getNameTable();
-        $sql = "SELECT * FROM {$targetTable} WHERE id = :id";
+        $targetPk = $targetClass::$primaryKey;
+        $sql = "SELECT * FROM {$targetTable} WHERE {$targetPk} = :id";
         return $this->readQuery($sql, ["id" => $this->$foreignKey], true, $targetClass);
     }
 
@@ -76,9 +78,9 @@ trait HasRelationships {
     {
 
         $targetTable = (new $targetClass())->getNameTable();
-        $targetKey = $targetTable . "_id";
+        $targetKey = "id_" . $targetTable;
         $baseTable = $this->getNameTable();
-        $baseKey = $baseTable . "_id";
+        $baseKey = "id_" . $baseTable ;
         try{
             $this->pdo->beginTransaction();
             $sqlDelete = "DELETE FROM {$pivotTable} WHERE {$pivotTable}.{$baseKey} = :id";

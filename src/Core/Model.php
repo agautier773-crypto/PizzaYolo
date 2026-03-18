@@ -15,6 +15,8 @@ use PDO;
 class Model {
     use IsFillable;
 
+    protected static string $primaryKey = "id";
+
     /**
      * Nom de la table associée au modèle
      * @var string
@@ -53,7 +55,8 @@ class Model {
      * @return array
      */
     public function find(int $id){
-        $sql = "SELECT * FROM " . $this->getNameTable() . " WHERE id = :id";
+        $targetPk = static::$primaryKey;
+        $sql = "SELECT * FROM {$this->getNameTable()} WHERE {$targetPk} = :id";
         return $this->readQuery($sql, ["id" => $id], true);
     }
 
