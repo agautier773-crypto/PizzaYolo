@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS commande(
    id_commande INT AUTO_INCREMENT,
    date DATETIME NOT NULL,
    etat ENUM ('PAYE', 'EN_PREPARATION', 'PRETE', 'LIVRER') DEFAULT 'PAYE',
+    commentaires VARCHAR(255)
    id_client INT NOT NULL,
    montant decimal (10,2) DEFAULT 0,
     id_employe INT NOT NULL,
@@ -50,3 +51,25 @@ CREATE TABLE IF NOT EXISTS commande_pizza(
    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
 )ENGINE=InnoDB;
 
+DELIMITER $$
+CREATE TRIGGER trg_calcule_montant_after_insert
+    AFTER INSERT ON commande_pizza
+    FOR EACH ROW
+BEGIN
+    DECLARE prix DECIMAL(10,2);
+    SELECT p.prix INTO prix FROM pizza as p WHERE NEW.id_pizza = p.id_pizza;
+    UPDATE commande set montant = montant + (NEW.quantite * prix) where id_commande = NEW.id_commande;
+END $$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER trg_calcule_montant_after_update
+    AFTER Update ON commande_pizza
+    FOR EACH ROW
+    BEGIN
+        DECLARE newPrix DECIMAL(10,2);
+        DECLARE oldPrix DECIMAL(10,2);
+        SELECT p.prix INTO newPrix FROM pizza as p WHERE NEW.id_pizza = p.id_pizza;
+        SELECT p.prix INTO oldPrix FROM pizza as p WHERE OLD.id_pizza = p.id_pizza;
+        UPDATE commande set montant = montant - (OLD.quantite * oldPrix) + (NEW.quantite * newPrix) where id_commande = NEW.id_commande;
+    END $$
+    DELIMITER ;

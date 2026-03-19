@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Core\Model;
 
-class CommandePizza extends Model {
+class CommandePizza extends Pizza {
 
     public static string $primaryKey = "id_commande";
 

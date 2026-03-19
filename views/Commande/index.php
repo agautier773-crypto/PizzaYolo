@@ -184,16 +184,29 @@
                 <td><span class="order-id"><?= $commande->id_commande ?></span></td>
                 <td> <?= $commande->client()->nom ?></td>
                 <td><?= $commande->date ?></td>
-                <td><?= $commande-> montant?></td>
-                <td><span class="badge-etat badge-en-cours"><?= $commande->etat ?></span></td>
+                <td><?= $commande-> montant?> €</td>
+                <td><span class="badge-etat <?= match($commande->etat){
+                        'EN_PREPARATION' => 'badge-en-cours',
+                        'LIVRER'                 => 'badge-validee',
+                        'PRETE'                 => 'badge-en-cours',
+                        'PAYE'                  => 'badge-livree',
+                        default                   => 'badge-en-cours'
+                    } ?>">
+                        <?= $commande->etat ?>
+                    </span>
+                </td>
                 <td>
                     <div class="actions-cell">
                         <a href="/show/<?= $commande->id_commande?>" class="btn-action btn-show">Show</a>
-                        <a href="#" class="btn-action btn-etat">État</a>
+                        <a href="/updateEtat/<?= $commande->id_commande?>" class="btn-action btn-etat" data-bs-toggle="modal" data-bs-target="#modalEtat">
+                            état
+                        </a>
                         <a href="#" class="btn-action btn-delete">Delete</a>
                     </div>
                 </td>
             </tr>
+            <?php require_once 'modalEtat.php' ?>
             <?php endforeach;?>
             </tbody>
+
 

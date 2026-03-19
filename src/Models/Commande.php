@@ -48,4 +48,9 @@ class Commande extends Model{
         return $namedClient;
     }
 
+    public function quantitePizza(){
+        $sql  = "SELECT pizza.*, commande_pizza.quantite FROM pizza JOIN commande_pizza ON commande_pizza.id_pizza = pizza.id_pizza
+                WHERE commande_pizza.id_commande = :id";
+        return $this->readQuery($sql, ["id"=>$this->id_commande], false, CommandePizza::class);
+    }
 }

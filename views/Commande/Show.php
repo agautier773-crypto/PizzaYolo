@@ -7,6 +7,12 @@
         --text-muted: #7a7872;
         --accent: #2c5f8a;
         --accent-light: #e8f0f7;
+        --danger: #c0392b;
+        --danger-light: #fdf0ee;
+        --warning: #b07d2a;
+        --warning-light: #fdf6e8;
+        --success: #2a7a4b;
+        --success-light: #eaf5ef;
         --neutral: #4a4a46;
         --neutral-light: #f0efec;
     }
@@ -122,11 +128,31 @@
         line-height: 1.6;
         min-height: 80px;
     }
-
+    .table-card tbody td {
+        padding: 1rem 1.1rem;
+        vertical-align: middle;
+        border: none;
+        font-size: 0.9rem;
+    }
     /* Responsive */
     @media (max-width: 480px) {
         .pizza-name { font-size: 0.85rem; }
     }
+    .badge-etat {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 0.3rem 0.65rem;
+        border-radius: 5px;
+        letter-spacing: 0.03em;
+        display: inline-block;
+    }
+
+    .badge-en-cours  { background: var(--warning-light); color: var(--warning); }
+    .badge-validee   { background: var(--success-light);  color: var(--success); }
+    .badge-annulee   { background: var(--danger-light);   color: var(--danger);  }
+    .badge-livree    { background: var(--accent-light);   color: var(--accent);  }
+
 </style>
 <body>
 <div class="page-wrapper">
@@ -144,16 +170,29 @@
                 <th>Nom</th>
                 <th>Ingrédients</th>
                 <th>Quantité</th>
+                <th>Etat</th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($commande->pizza() as $pizzas): ?>
+
+                <?php foreach ($commande->quantitePizza() as $pizza):?>
                 <tr>
-                    <td><?= $pizzas->nom ?></td>
-                    <td><?= $pizzas->ingredients ?></td>
-                    <td><span class="pizza-qty"></span></td>
+                    <td><?= $pizza->nom ?></td>
+                    <td><?= $pizza->ingredients ?></td>
+                    <td><span> <?= $pizza->quantite ?></span></td>
+                    <td><span class="badge-etat <?= match($commande->etat){
+                            'EN_PREPARATION' => 'badge-en-cours',
+                            'LIVRER'                 => 'badge-validee',
+                            'PRETE'                 => 'badge-en-cours',
+                            'PAYE'                  => 'badge-livree',
+                            default                   => 'badge-en-cours'
+                        } ?>">
+                        <?= $commande->etat ?>
+                    </span>
+                    </td>
                 </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+
             </tbody>
         </table>
     </div>
