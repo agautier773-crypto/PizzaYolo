@@ -22,7 +22,7 @@ $router
    // ajout des routes
     ->get("/", App\Controllers\CommandeController::class ."::home")
     ->get("/show/{id}", App\Controllers\CommandeController::class ."::show")
-
+    ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")
 
 
     ->get("/login", App\Controllers\AuthController::class . "::login")

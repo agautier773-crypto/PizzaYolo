@@ -110,6 +110,7 @@ class Model {
         }
     }
 
+
     /**
      * Recherche un ou plusieurs enregistrements selon un champ et une valeur donnés.
      * @param string $field Nom du champ sur lequel filtrer (ex: 'email')
