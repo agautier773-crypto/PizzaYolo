@@ -210,6 +210,7 @@ class Model {
     /**
      * Hydrate les propriétés du modèle à partir d'un tableau associatif
      * Seuls les champs retournés par getFields() sont hydratés. (fillable)
+     * gere aussi les valeurs par défaut avec isset, si pas dans values alors ajoute la valeur atrtribué dans modele
      * @param array $values
      * @return void
      */
@@ -217,7 +218,8 @@ class Model {
     {
         $attr = explode(", ", $this->getFields());
         foreach ($attr as $field) {
-            if (property_exists($this, $field)){
+            if (property_exists($this, $field) && isset($values[$field])){
+                settype($values[$field], gettype($this->$field));
                 $this->$field = $values[$field];
             }
         }

@@ -25,6 +25,10 @@ $router
     ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")
     ->get("/Delete/{id}", App\Controllers\CommandeController::class."::delete")
 
+    ->get("/pizza", \App\Controllers\PizzaController::class."::home")
+    ->get("/pizza/create", App\Controllers\PizzaController::class."::create")
+    ->post("/pizza/create", \App\Controllers\PizzaController::class."::store")
+
     ->get("/login", App\Controllers\AuthController::class . "::login")
     ->post("/login", App\Controllers\AuthController::class . "::attemptlogin")
     ->get("/logout", App\Controllers\AuthController::class . "::logout")

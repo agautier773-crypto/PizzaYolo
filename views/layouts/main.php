@@ -14,13 +14,17 @@ use App\Core\Auth;
         <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
     </head>
+
 <body>
     <!-- NAV -->
     <nav class="navbar">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand" href="/"/></i>PizzaYolo</a>
             <div class="d-flex gap-2">
-                    <a href="/tache" class="btn btn-outline-c btn-sm px-3"> Liste des Commandes en cours</a>
+                    <a href="/" class="btn btn-outline-c btn-sm px-3"> Liste des Commandes en cours</a>
+                    <a href="/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle commande</a>
+                    <a href="/pizza/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle Pizza</a>
+                    <a href="/pizza" class="btn btn-outline-c btn-sm px-3"> Liste des Pizzas</a>
                     <a href="/logout" class="btn btn-outline-c btn-sm px-3">Se déconnecter</a>
                     <a href="/login" class="btn btn-outline-c btn-sm px-3">Se connecter</a>
             </div>
