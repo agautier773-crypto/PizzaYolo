@@ -171,6 +171,7 @@
                 <th>Ingrédients</th>
                 <th>Quantité</th>
                 <th>Etat</th>
+                <th>Commentaires</th>
             </tr>
             </thead>
             <tbody>
@@ -190,12 +191,11 @@
                         <?= $commande->etat ?>
                     </span>
                     </td>
+                    <td><?= $commande->commentaires ?></td>
                 </tr>
                 <?php endforeach; ?>
-
             </tbody>
         </table>
     </div>
-
 </div>
 </body>

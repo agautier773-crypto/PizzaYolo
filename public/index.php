@@ -23,7 +23,7 @@ $router
     ->get("/", App\Controllers\CommandeController::class ."::home")
     ->get("/show/{id}", App\Controllers\CommandeController::class ."::show")
     ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")
-
+    ->get("/Delete/{id}", App\Controllers\CommandeController::class."::delete")
 
     ->get("/login", App\Controllers\AuthController::class . "::login")
     ->post("/login", App\Controllers\AuthController::class . "::attemptlogin")

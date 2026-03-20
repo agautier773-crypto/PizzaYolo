@@ -76,7 +76,7 @@ trait HasRelationships {
      */
     public function sync(string $targetClass, array $data, string $pivotTable = ""):bool
     {
-
+        $primaryKey = static::$primaryKey;
         $targetTable = (new $targetClass())->getNameTable();
         $targetKey = "id_" . $targetTable;
         $baseTable = $this->getNameTable();
@@ -85,7 +85,7 @@ trait HasRelationships {
             $this->pdo->beginTransaction();
             $sqlDelete = "DELETE FROM {$pivotTable} WHERE {$pivotTable}.{$baseKey} = :id";
             $dataDelete = [
-                "id" => $this->id
+                "id" => $this->$primaryKey
             ];
             $stmt = $this->pdo->prepare($sqlDelete);
             $stmt->execute($dataDelete);
@@ -100,7 +100,7 @@ trait HasRelationships {
 
                 foreach ($data as $id_role){
                     $stmt->execute([
-                        $baseKey => $this->id,
+                        $baseKey => $this->$primaryKey,
                         $targetKey => $id_role
                     ]);
                 }
