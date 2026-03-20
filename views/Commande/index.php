@@ -163,7 +163,7 @@
 
     <div class="page-header">
         <h1 class="page-title">Commandes en cours</h1>
-        <span class="page-count"><? count($commandes)?> </span>
+        <span class="page-count"><?=count($commandes)?> </span>
     </div>
 
     <div class="table-card">
@@ -198,15 +198,15 @@
                 <td>
                     <div class="actions-cell">
                         <a href="/show/<?= $commande->id_commande?>" class="btn-action btn-show">Show</a>
-                        <a href="/updateEtat/<?= $commande->id_commande?>" class="btn-action btn-etat" data-bs-toggle="modal" data-bs-target="#modalEtat">
+                        <a href="#" class="btn-action btn-etat" data-bs-toggle="modal" data-bs-target="#modalEtat" data-id="<?= $commande->id_commande?>">
                             état
                         </a>
-                        <a href="#" class="btn-action btn-delete">Delete</a>
+                        <a href="/Delete/<?=$commande->id_commande?>" class="btn-action btn-delete">Delete</a>
                     </div>
                 </td>
             </tr>
-            <?php require_once 'modalEtat.php' ?>
             <?php endforeach;?>
             </tbody>
+            <?php require_once 'modalEtat.php' ?>
 
 

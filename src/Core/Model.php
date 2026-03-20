@@ -78,11 +78,12 @@ class Model {
      * @return bool
      */
     public function update():bool{
-        $sql = "UPDATE {$this->getNameTable()} SET {$this->getPreparedValues(true)} WHERE id = :id";
+        $primaryKey = static::$primaryKey;
+        $sql = "UPDATE {$this->getNameTable()} SET {$this->getPreparedValues(true)} WHERE {$primaryKey} = :{$primaryKey}";
         $values = $this->getValues();
         $fields = explode(", ", $this->getFields());
 
-        $values["id"] = $this->id;
+        $values[$primaryKey] = $this->$primaryKey;
         return $this->writeQuery($sql, $values);
     }
 
@@ -92,8 +93,9 @@ class Model {
      * @return bool
      */
     public function delete($id):bool{
-        $sql = "DELETE FROM {$this->getNameTable()} WHERE id = :id";
-        return $this->writeQuery($sql, ["id" => $id]);
+        $primaryKey = static::$primaryKey;
+        $sql = "DELETE FROM {$this->getNameTable()} WHERE {$primaryKey} = :{$primaryKey}";
+        return $this->writeQuery($sql, [$primaryKey => $id]);
     }
 
     /**
@@ -103,7 +105,8 @@ class Model {
      */
 
     public function save(){
-        if (!isset($this->id)){
+        $primaryKey = static::$primaryKey;
+        if (!isset($this->$primaryKey)){
             $this->create();
         }else{
             $this->update();
@@ -191,7 +194,8 @@ class Model {
             $this->pdo->commit();
 
             if ($lastId > 0){
-                $this->id =$lastId;
+                $primaryKey = static::$primaryKey;
+                $this->$primaryKey = $lastId;
             }
             return true ;
 

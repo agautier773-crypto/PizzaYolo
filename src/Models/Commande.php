@@ -4,7 +4,8 @@ namespace App\Models;
 
 use App\Core\Model;
 use App\Core\Traits\HasRelationships;
-use App\Enum;
+use App\Enum\Etat_commande;
+
 
 class Commande extends Model{
     use HasRelationships;
@@ -20,12 +21,15 @@ class Commande extends Model{
 
     public float $montant = 0;
 
+    public ?string $commentaires;
+
     public array $fillable = [
         "date",
         "etat",
         "montant",
         "id_client",
         "id_employe",
+        "commentaires"
     ];
 
     public function pizza(){

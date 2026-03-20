@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS commande(
    id_commande INT AUTO_INCREMENT,
    date DATETIME NOT NULL,
    etat ENUM ('PAYE', 'EN_PREPARATION', 'PRETE', 'LIVRER') DEFAULT 'PAYE',
-    commentaires VARCHAR(255)
+    commentaires VARCHAR(255),
    id_client INT NOT NULL,
    montant decimal (10,2) DEFAULT 0,
     id_employe INT NOT NULL,

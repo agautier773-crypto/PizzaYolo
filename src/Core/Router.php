@@ -150,5 +150,4 @@ class Router{
         $this->middlewares = $array;
 
     }
-
 }
