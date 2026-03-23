@@ -62,4 +62,16 @@ class CommandeController extends Controller{
         $this->redirect("/");
     }
 
+    public function create(){
+        $commande = new Commande();
+        $client = new Client();
+        $pizza = (new Pizza())->findAll();
+        View::render("commande.form", [
+            'commande'=>$commande,
+            'client'=>$client,
+            'pizza'=>$pizza,
+        ]);
+
+    }
+
 }
