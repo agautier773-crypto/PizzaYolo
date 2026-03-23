@@ -24,6 +24,7 @@ $router
     ->get("/show/{id}", App\Controllers\CommandeController::class ."::show")
     ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")
     ->get("/Delete/{id}", App\Controllers\CommandeController::class."::delete")
+    ->get("/create", App\Controllers\CommandeController::class."::create")
 
     ->get("/pizza", \App\Controllers\PizzaController::class."::home")
     ->get("/pizza/create", App\Controllers\PizzaController::class."::create")
