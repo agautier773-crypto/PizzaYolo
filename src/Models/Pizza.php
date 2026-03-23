@@ -9,7 +9,7 @@ class Pizza extends Model{
 
     public static string $primaryKey = "id_pizza";
 
-    public ?int $id_pizza = null;
+    public ?int $id_pizza;
 
     public string $nom = "";
 

@@ -73,14 +73,13 @@ class PizzaController extends Controller{
         ]);
     }
 
-    public function update($id){
+    public function updatePizza($id){
         $id = intval($id);
         $pizza = (new Pizza())->find($id);
 
         $validator = new Wizardvalidator($_POST, [
             "nom" => "required",
             "ingredients" => "required",
-            "statut" => "required",
             "prix" => "required"
         ]);
         if($validator->fails()){
@@ -88,12 +87,14 @@ class PizzaController extends Controller{
                 Session::setFlash("danger", $error);
             }
             Session::set("old", $_POST);
-            header("Location: /pizza/update/".$pizza->id);
+            header("Location: /pizza/update/".$pizza->id_pizza);
             exit;
         }
         $validated = $validator ->validated();
         $pizza->fill($validated);
         $pizza->save();
+
+
 
         $this->redirect("/pizza");
     }
