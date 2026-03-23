@@ -55,4 +55,46 @@ class PizzaController extends Controller{
             "pizza" => (new Pizza()) ->findAll()
         ]);
     }
+
+    public function delete($id){
+        $p = (new Pizza())->find($id);
+        $p->delete($id);
+
+        Session::setFlash("success", "Pizza supprimée");
+        $this->redirect("/pizza");
+    }
+
+    public function edit($id){
+        $id = intval($id);
+        $pizza = (new Pizza())->find($id);
+
+        View::render('pizza.form', [
+            'pizza'=>$pizza,
+        ]);
+    }
+
+    public function update($id){
+        $id = intval($id);
+        $pizza = (new Pizza())->find($id);
+
+        $validator = new Wizardvalidator($_POST, [
+            "nom" => "required",
+            "ingredients" => "required",
+            "statut" => "required",
+            "prix" => "required"
+        ]);
+        if($validator->fails()){
+            foreach ($validator->errors() as $error){
+                Session::setFlash("danger", $error);
+            }
+            Session::set("old", $_POST);
+            header("Location: /pizza/update/".$pizza->id);
+            exit;
+        }
+        $validated = $validator ->validated();
+        $pizza->fill($validated);
+        $pizza->save();
+
+        $this->redirect("/pizza");
+    }
 }

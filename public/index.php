@@ -28,6 +28,10 @@ $router
     ->get("/pizza", \App\Controllers\PizzaController::class."::home")
     ->get("/pizza/create", App\Controllers\PizzaController::class."::create")
     ->post("/pizza/create", \App\Controllers\PizzaController::class."::store")
+    ->get("/pizza/delete/{id}", App\Controllers\PizzaController::class."::delete")
+    ->get("/pizza/update/{id}", App\Controllers\PizzaController::class."::edit")
+    ->post("/pizza/update/{id}", App\Controllers\PizzaController::class."::update")
+
 
     ->get("/login", App\Controllers\AuthController::class . "::login")
     ->post("/login", App\Controllers\AuthController::class . "::attemptlogin")

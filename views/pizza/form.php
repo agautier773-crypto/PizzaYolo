@@ -71,6 +71,17 @@
     .btn-submit { background: #2c5f8a; color: #fff; border-color: #2c5f8a; }
     .btn-submit:hover { background: #245078; }
 </style>
+<?php
+if(isset($pizza->id)){
+    $action = "update";
+    $actionUri = "/pizza/update/".$pizza->id;
+    $titre = "Modifier la Pizza";
+}else{
+    $action = "create";
+    $actionUri = "/pizza/create";
+    $titre = "Créer la Pizza";
+}
+?>
 
 <div class="content">
     <div class="page-header">
@@ -78,7 +89,7 @@
     </div>
 
     <div class="card">
-        <form action="/pizza/create" method="POST">
+        <form action="<?= $actionUri?>" method="POST">
             <div class="field">
                 <label for="nom">Nom de la pizza</label>
                 <input type="text" id="nom" name="nom" placeholder="ex. Margherita" value="<?= $pizza->nom ?>">
@@ -94,7 +105,7 @@
             <div class="divider"></div>
             <div class="footer">
                 <a href="/" class="btn btn-cancel">Annuler</a>
-                <button type="submit" class="btn btn-submit">Enregistrer</button>
+                <button type="submit" class="btn btn-submit"><?= $titre?></button>
             </div>
         </form>
     </div>
