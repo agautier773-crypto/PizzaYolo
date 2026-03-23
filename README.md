@@ -23,6 +23,10 @@ Le projet fonctionne avec **Docker**, intégrant un environnement complet compre
 ### 1. Prérequis
 - **Docker** installés sur votre machine
 
+> [!IMPORTANT]
+> une fois le projet récupérer et se trouve bien sur l'emplacement que vous avez choisi 
+ouvrez le avec un IDE et ajoutez un fichier .env a la racine du projet
+
 ### 2. Lancement du projet
 Dans le répertoire du projet :
 
