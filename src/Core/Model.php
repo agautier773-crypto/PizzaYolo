@@ -55,9 +55,9 @@ class Model {
      * @return array
      */
     public function find(int $id){
-        $targetPk = static::$primaryKey;
-        $sql = "SELECT * FROM {$this->getNameTable()} WHERE {$targetPk} = :id";
-        return $this->readQuery($sql, ["id" => $id], true);
+        $primaryKey = static::$primaryKey;
+        $sql = "SELECT * FROM {$this->getNameTable()} WHERE {$primaryKey} = :{$primaryKey}";
+        return $this->readQuery($sql, [ $primaryKey=> $id], true);
     }
 
     /**
@@ -165,7 +165,7 @@ class Model {
         }else {
             $class = $fetchClass;
         }
-        $req->setFetchMode(PDO::FETCH_CLASS, $class);
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
         if ($isOne){
             $result = $req->fetch();
             return $result ?: null;
@@ -193,8 +193,8 @@ class Model {
 
             $this->pdo->commit();
 
-            if ($lastId > 0){
-                $primaryKey = static::$primaryKey;
+            $primaryKey = static::$primaryKey;
+            if ($lastId > 0 && !isset($this->$primaryKey)){
                 $this->$primaryKey = $lastId;
             }
             return true ;

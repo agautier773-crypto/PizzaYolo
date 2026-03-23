@@ -30,7 +30,7 @@ $router
     ->post("/pizza/create", \App\Controllers\PizzaController::class."::store")
     ->get("/pizza/delete/{id}", App\Controllers\PizzaController::class."::delete")
     ->get("/pizza/update/{id}", App\Controllers\PizzaController::class."::edit")
-    ->post("/pizza/update/{id}", App\Controllers\PizzaController::class."::update")
+    ->post("/pizza/update/{id}", App\Controllers\PizzaController::class."::updatePizza")
 
 
     ->get("/login", App\Controllers\AuthController::class . "::login")

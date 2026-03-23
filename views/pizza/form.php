@@ -72,14 +72,12 @@
     .btn-submit:hover { background: #245078; }
 </style>
 <?php
-if(isset($pizza->id)){
+if(isset($pizza->id_pizza)){
     $action = "update";
-    $actionUri = "/pizza/update/".$pizza->id;
-    $titre = "Modifier la Pizza";
+    $actionUri = "/pizza/update/".$pizza->id_pizza;
 }else{
     $action = "create";
     $actionUri = "/pizza/create";
-    $titre = "Créer la Pizza";
 }
 ?>
 
@@ -89,7 +87,7 @@ if(isset($pizza->id)){
     </div>
 
     <div class="card">
-        <form action="<?= $actionUri?>" method="POST">
+        <form action="<?=$actionUri?>" method="POST">
             <div class="field">
                 <label for="nom">Nom de la pizza</label>
                 <input type="text" id="nom" name="nom" placeholder="ex. Margherita" value="<?= $pizza->nom ?>">
@@ -105,7 +103,7 @@ if(isset($pizza->id)){
             <div class="divider"></div>
             <div class="footer">
                 <a href="/" class="btn btn-cancel">Annuler</a>
-                <button type="submit" class="btn btn-submit"><?= $titre?></button>
+                <button type="submit" class="btn btn-submit">Enregistrer</button>
             </div>
         </form>
     </div>

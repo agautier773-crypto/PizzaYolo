@@ -49,17 +49,17 @@ class CommandeController extends Controller{
         $this->redirect("/");
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $c = (new Commande())->find($id);
-        if(!$c){
+        if (!$c) {
             $this->redirect("/");
         }
-        $c -> sync(CommandePizza::class, [], "commande_pizza");
-        $c -> delete($id);
+        $c->sync(CommandePizza::class, [], "commande_pizza");
+        $c->delete($id);
 
         Session::setFlash("success", "Commande supprimée");
         $this->redirect("/");
     }
-
 
 }
