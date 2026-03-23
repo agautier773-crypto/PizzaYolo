@@ -60,4 +60,6 @@ class CommandeController extends Controller{
         Session::setFlash("success", "Commande supprimée");
         $this->redirect("/");
     }
+
+
 }
