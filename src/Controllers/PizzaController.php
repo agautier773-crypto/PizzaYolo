@@ -9,7 +9,7 @@ use App\Models\Pizza;
 use App\Core\View;
 use Exception;
 
-class PizzaController extends Controller{
+class PizzaController extends Controller {
 
     /**
      * @throws Exception
@@ -50,7 +50,7 @@ class PizzaController extends Controller{
 
     }
 
-    public function home(){
+    public function home() {
         View::render("pizza.list", [
             "pizza" => (new Pizza()) ->findAll()
         ]);

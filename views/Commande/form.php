@@ -70,6 +70,61 @@
 
     .btn-submit { background: #2c5f8a; color: #fff; border-color: #2c5f8a; }
     .btn-submit:hover { background: #245078; }
+    .qty-wrap {
+        display: inline-flex; align-items: stretch;
+        border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .qty-btn {
+        width: 28px; background: #f8f9fb; border: none;
+        font-size: 1rem; color: var(--text); cursor: pointer; transition: background .15s;
+    }
+    .qty-btn:hover { background: #edf2f7; }
+    .qty-input {
+        width: 38px; text-align: center; border: none;
+        border-left: 1.5px solid var(--border); border-right: 1.5px solid var(--border);
+        font-size: .88rem; font-weight: 600; background: #fff; color: var(--text); padding: .28rem 0;
+        -moz-appearance: textfield;
+    }
+    .qty-input::-webkit-inner-spin-button,
+    .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .btn-add-row {
+        background: none; border: 1.5px dashed var(--border); border-radius: var(--radius);
+        color: var(--muted); font-family: 'Inter', sans-serif;
+        font-size: .84rem; font-weight: 500;
+        padding: .45rem 1rem; cursor: pointer; width: 100%; text-align: center;
+        transition: border-color .18s, color .18s, background .18s;
+    }
+    .btn-add-row:hover { border-color: var(--red); color: var(--red); background: #fff8f8; }
+    .btn-remove-row {
+        background: none;
+        border: none;
+        color: #e74c3c;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0 0.4rem;
+        line-height: 1;
+        align-self: center;
+        transition: transform 0.1s;
+    }
+
+    .btn-remove-row:hover {
+        transform: scale(1.3);
+    }
+    .btn-add-client {
+        background: none;
+        border: 1px solid var(--cyan, #0dcaf0);
+        color: var(--cyan, #0dcaf0);
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-add-client:hover {
+        background: var(--cyan, #0dcaf0);
+        color: #fff;
+    }
 </style>
 <?php
 if(isset($commande->id_commande)){
@@ -88,31 +143,174 @@ if(isset($commande->id_commande)){
 
     <div class="card">
         <form action="<?=$actionUri?>" method="POST">
-            <div class="field">
+            <div class="ligne" style="margin-bottom:1rem;">
+                <label for="client">Client</label>
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                    <select id="client" name="id_client" class="form-select" required>
+                        <option disabled selected>Choisir un client</option>
+                        <?php foreach ($clients as $c): ?>
+                            <option value="<?= htmlspecialchars($c->id_client) ?>">
+                                <?= htmlspecialchars($c->nom) ?>
+                                / <?= htmlspecialchars($c->telephone) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="button" class="btn-add-client" onclick="openModalClient()">+ Nouveau client</button>
+                </div>
+            </div>
+
+            <div class="ligne" style="margin-bottom:1rem;">
                 <label for="nom">Date de la commande</label>
                 <label for="date"></label><input type="datetime-local" id="date" name="date" placeholder="ex. Margherita" value="<?= $commande->date ?>">
             </div>
-            <div class="mb-4">
-                <label class="form-label">Pizza <span style="color:var(--cyan)">*</span></label>
-                <select name="categorie" class="form-select">
-                    <option disabled <?= !isset($commande->id_pizza) ? 'selected' : '' ?>> Choisir une Pizza </option>
-                    <?php foreach ($pizza as $p): ?>
-                        <option value="<?= $p->id_pizza ?>"
-                            <?= (isset($commande->id_pizza) && $commande->id_pizza == $pizza->id_pizza) ? 'selected' : '' ?>>
-                            <?= escape($p->nom) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <div id="lignes-containers">
+                <div class="ligne" data-index="0" style="margin-bottom:1rem;">
+                    <div class="mb-4">
+                        <label class="form-label">Pizza <span style="color:var(--cyan)">*</span></label>
+                        <select name="lignes[0][id_pizza]" class="form-select" required>
+                            <option disabled selected> Choisir une Pizza </option>
+                            <?php foreach ($pizza as $p): ?>
+                                <option
+                                        value="<?= htmlspecialchars($p->id_pizza) ?>"
+                                        data-price="<?= htmlspecialchars($p->prix) ?>"
+                                >
+                                    <?= htmlspecialchars($p->nom) ?>
+                                     / <?= htmlspecialchars($p->prix)?>€
+                                     / <?= htmlspecialchars($p->ingredients)?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="qty-wrap">
+                        <button type="button" class="qty-btn" onclick="chgQty(this,-1)">−</button>
+                        <input type="number" name="lignes[0][quantite]" class="qty-input" value="1" min="1" max="20" readonly/>
+                        <button type="button" class="qty-btn" onclick="chgQty(this,1)">+</button>
+                    </div>
+                </div>
             </div>
-            <div class="field">
-                <label for="prix">Prix (€)</label>
-                <input type="text" id="prix" name="prix" placeholder="ex. 12.50" value="<?= $pizza->prix?>">
-            </div>
-            <div class="divider"></div>
-            <div class="footer">
-                <a href="/" class="btn btn-cancel">Annuler</a>
-                <button type="submit" class="btn btn-submit">Enregistrer</button>
+            <button type="button" onclick="addLigne()" class="btn-add-row">
+                + Ajouter une pizza
+            </button>
+
+            <div class="field" style="margin-top:1rem;">
+                <label>Total (€)</label>
+                <input type="text" id="total" name="total" readonly value="0.00">
             </div>
         </form>
+        <?php require_once 'modalClient.php' ?>
     </div>
 </div>
+
+<script>
+    function chgQty(btn, delta) {
+        const input = btn.closest('.qty-wrap').querySelector('.qty-input');
+        const v = parseInt(input.value || '1', 10);
+        input.value = Math.min(20, Math.max(1, v + delta));
+        updateTotal();
+    }
+
+    let ligneIndex = 1;
+
+    function addLigne() {
+        const container = document.getElementById('lignes-containers');
+        const first     = container.querySelector('.ligne');
+        const clone     = first.cloneNode(true);
+
+        const i = ligneIndex++;
+        clone.setAttribute('data-index', i);
+
+        clone.querySelectorAll('[name]').forEach(function (el) {
+            el.name = el.name.replace(/\[\d+\]/, '[' + i + ']');
+            if (el.tagName === 'SELECT') {
+                el.selectedIndex = 0;
+            }
+            if (el.type === 'number') {
+                el.value = 1;
+            }
+
+        });
+
+        // recalcule le total quand on change la pizza
+        clone.querySelector('select').addEventListener('change', updateTotal);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '✕';
+        removeBtn.className = 'btn-remove-row';
+        removeBtn.onclick = function () {
+            clone.remove();
+            updateTotal();
+        };
+        clone.appendChild(removeBtn);
+
+        container.appendChild(clone);
+        updateTotal();
+    }
+
+    function updateTotal() {
+        const lignes = document.querySelectorAll('#lignes-containers .ligne');
+        let total = 0;
+
+        lignes.forEach(function (ligne) {
+            const select   = ligne.querySelector('select');
+            const qtyInput = ligne.querySelector('.qty-input');
+
+            if (!select || !qtyInput) return;
+
+            const option = select.options[select.selectedIndex];
+            const price  = parseFloat(option.getAttribute('data-price') || '0');
+            const qty    = parseInt(qtyInput.value || '0', 10);
+
+            total += price * qty;
+        });
+
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    // attache le recalcul sur la première ligne
+    document.addEventListener('DOMContentLoaded', function () {
+        const firstSelect = document.querySelector('#lignes-container .ligne select');
+        if (firstSelect) {
+            firstSelect.addEventListener('change', updateTotal);
+        }
+        updateTotal();
+    });
+
+    function openModalClient() {
+
+        const modal = document.getElementById('modal-client');
+        modal.style.display = 'flex';
+    }
+    function closeModalClient() {
+        const modal = document.getElementById('modal-client');
+        modal.style.display = 'none';
+    }
+    document.getElementById('form-nouveau-client').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Crée et ajoute l'option dans le select
+                const select = document.getElementById('client');
+                const option = document.createElement('option');
+                option.value = data.id_client;
+                option.textContent = data.nom;
+                select.appendChild(option);
+
+                // Sélectionne automatiquement le nouveau client
+                select.value = data.id_client;
+
+                closeModalClient();
+            })
+            .catch(err => {
+                console.error('Erreur fetch:', err);
+            });
+    });
+
+</script>

@@ -13,6 +13,8 @@ services:
     # [nom_volume:chemin_conteneur] represente un volume nommée (pour du stockage persistant) il est gerer par dockerutilisé pour stocker la donnée
     volumes:
       - .:/var/www/html
+    extra_hosts:
+      - host.docker.internal:host-gateway # permet au conteneur de communiquer avec le navigateur lors d'une session de débogage
     # ajoute une condition sur l'ordre de demarrage (doit demarrer apres le conteneur avec le nom "db")
     depends_on:
       - db
