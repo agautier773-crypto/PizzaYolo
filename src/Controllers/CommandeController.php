@@ -97,7 +97,7 @@ class CommandeController extends Controller{
 
         $client->save();
 
-        Session::setFlash("success", "Client crée");
+        // renvoie du Json au js
         http_response_code(200);
         echo json_encode(['id_client' => $client->id_client, 'nom' => $client->nom]);
         exit;

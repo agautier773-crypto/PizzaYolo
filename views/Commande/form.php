@@ -140,7 +140,7 @@ if(isset($commande->id_commande)){
     <div class="page-header">
         <span class="page-title">Nouvelle Commande</span>
     </div>
-
+<!-- Form client -->
     <div class="card">
         <form action="<?=$actionUri?>" method="POST">
             <div class="ligne" style="margin-bottom:1rem;">
@@ -159,10 +159,12 @@ if(isset($commande->id_commande)){
                 </div>
             </div>
 
+            <!-- form date -->
             <div class="ligne" style="margin-bottom:1rem;">
                 <label for="nom">Date de la commande</label>
                 <label for="date"></label><input type="datetime-local" id="date" name="date" placeholder="ex. Margherita" value="<?= $commande->date ?>">
             </div>
+            <!-- Conteneur pour ajout pizza -->
             <div id="lignes-containers">
                 <div class="ligne" data-index="0" style="margin-bottom:1rem;">
                     <div class="mb-4">
@@ -191,10 +193,14 @@ if(isset($commande->id_commande)){
             <button type="button" onclick="addLigne()" class="btn-add-row">
                 + Ajouter une pizza
             </button>
-
+            <!-- prix total commande -->
             <div class="field" style="margin-top:1rem;">
                 <label>Total (€)</label>
                 <input type="text" id="total" name="total" readonly value="0.00">
+            </div>
+            <div class="field">
+                <label for="commentaires"> Commentaires </label>
+                <input type="text" id="commentaires" name="commentaires">
             </div>
         </form>
         <?php require_once 'modalClient.php' ?>
@@ -202,6 +208,7 @@ if(isset($commande->id_commande)){
 </div>
 
 <script>
+    //fonction appelé clique sur + ou -, additionne au delta et recalcul du montant
     function chgQty(btn, delta) {
         const input = btn.closest('.qty-wrap').querySelector('.qty-input');
         const v = parseInt(input.value || '1', 10);
@@ -211,6 +218,7 @@ if(isset($commande->id_commande)){
 
     let ligneIndex = 1;
 
+    // On copie la premiere ligne de pizza
     function addLigne() {
         const container = document.getElementById('lignes-containers');
         const first     = container.querySelector('.ligne');
@@ -219,6 +227,7 @@ if(isset($commande->id_commande)){
         const i = ligneIndex++;
         clone.setAttribute('data-index', i);
 
+        // permet la construction d'un tableau pour le serveur
         clone.querySelectorAll('[name]').forEach(function (el) {
             el.name = el.name.replace(/\[\d+\]/, '[' + i + ']');
             if (el.tagName === 'SELECT') {
@@ -229,7 +238,7 @@ if(isset($commande->id_commande)){
             }
 
         });
-
+        // Suppression d'une ligne pizza
         // recalcule le total quand on change la pizza
         clone.querySelector('select').addEventListener('change', updateTotal);
 
@@ -247,6 +256,7 @@ if(isset($commande->id_commande)){
         updateTotal();
     }
 
+    //Mise a jour dynamique du prix total
     function updateTotal() {
         const lignes = document.querySelectorAll('#lignes-containers .ligne');
         let total = 0;
@@ -257,6 +267,7 @@ if(isset($commande->id_commande)){
 
             if (!select || !qtyInput) return;
 
+            //recupere le prix du produit
             const option = select.options[select.selectedIndex];
             const price  = parseFloat(option.getAttribute('data-price') || '0');
             const qty    = parseInt(qtyInput.value || '0', 10);
@@ -276,27 +287,35 @@ if(isset($commande->id_commande)){
         updateTotal();
     });
 
+    //ouverture de la modal
     function openModalClient() {
 
         const modal = document.getElementById('modal-client');
         modal.style.display = 'flex';
     }
+
+    //fermeture de la modal
     function closeModalClient() {
         const modal = document.getElementById('modal-client');
         modal.style.display = 'none';
     }
+    // cette fonction permet de soumettre le formulaire client sans recharger la page et avoir accès direct au nouveau client
+    //on bloque le rechargement du formulaire
     document.getElementById('form-nouveau-client').addEventListener('submit', function (e) {
         e.preventDefault();
 
+        //recup les données envoyées
         const formData = new FormData(this);
 
+        //Envoie des données au serveur
         fetch('/create', {
             method: 'POST',
             body: formData
         })
+            // on recupere la reponse json du controller
             .then(response => response.json())
             .then(data => {
-                // Crée et ajoute l'option dans le select
+                // Crée et ajoute le nouveau client dans le select
                 const select = document.getElementById('client');
                 const option = document.createElement('option');
                 option.value = data.id_client;
