@@ -62,13 +62,67 @@ class CommandeController extends Controller{
         $this->redirect("/");
     }
 
+    /**
+     * Reception des requêtes de création de client
+     *
+     * Path : POST sur /clients
+     * @return void
+     */
+    public function createClient() {
+
+        // on récupère les informations provenant de la requête POST
+        // et on les vérifie
+        $validator = new WizardValidator($_POST, [
+            "nom" => "required",
+            "rue" => "required",
+            "ville" => "required",
+            "code_postal" => "required",
+            "telephone" => "required",
+        ]);
+
+        if ($validator->fails()){
+            # erreurs
+            foreach ($validator->errors() as $error){
+                Session::setFlash("danger", $error);
+            }
+            Session::set("old", $_POST);
+            header("Location: /create");
+            exit;
+        }
+
+        $validated = $validator->validated();
+
+        $client = new Client();
+        $client->fill($validated);
+
+        $client->save();
+
+        Session::setFlash("success", "Client crée");
+        http_response_code(200);
+        echo json_encode(['id_client' => $client->id_client, 'nom' => $client->nom]);
+        exit;
+
+
+        // traitement pour nouveau client
+       // $client = new Client($_POST[???], $_POST[???], $_POST[???], $_POST[???]);
+        // $client->save();
+
+    }
+
+    /**
+     * Rend la vue "commande"
+     *
+     * Réponse à GET sur /commande
+     *
+     */
     public function create(){
         $commande = new Commande();
-        $client = new Client();
+        $clients = (new Client())->findAll();
         $pizza = (new Pizza())->findAll();
+
         View::render("commande.form", [
             'commande'=>$commande,
-            'client'=>$client,
+            'clients'=>$clients,
             'pizza'=>$pizza,
         ]);
 
