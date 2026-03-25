@@ -13,7 +13,6 @@ class Commande extends Model{
     public static string $primaryKey = "id_commande";
     public ?int $id_commande = null;
     public ?int $id_client = null;
-    public ?int $id_employe = null;
 
     public string $date = "";
 
@@ -21,14 +20,13 @@ class Commande extends Model{
 
     public float $montant = 0;
 
-    public ?string $commentaires;
+    public ?string $commentaires = null;
 
     public array $fillable = [
         "date",
         "etat",
         "montant",
         "id_client",
-        "id_employe",
         "commentaires"
     ];
 
@@ -38,10 +36,6 @@ class Commande extends Model{
 
     public function client(){
         return $this->belongsTo(Client::class, "id_client");
-    }
-
-    public function employe(){
-        return $this->belongsTo(Employe::class, "id_employe");
     }
 
     public function getNamedClient(){

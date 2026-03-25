@@ -219,7 +219,11 @@ class Model {
         $attr = explode(", ", $this->getFields());
         foreach ($attr as $field) {
             if (property_exists($this, $field) && isset($values[$field])){
-                settype($values[$field], gettype($this->$field));
+                $currentType = gettype($this->$field);
+
+                if($currentType !== "NULL"){
+                    settype($values[$field], $currentType);
+                }
                 $this->$field = $values[$field];
             }
         }

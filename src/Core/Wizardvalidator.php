@@ -19,7 +19,8 @@ class Wizardvalidator {
         "max"      => "Le champ :field est trop grand",
         "min"      => "Le champ :field est trop petit",
         "unique"   => "Le champ :field existe déjà",
-        "required" => "le champ :field est requis"
+        "required" => "le champ :field est requis",
+        "optionnal" => "Le champ :field est optionnel",
     ];
 
 

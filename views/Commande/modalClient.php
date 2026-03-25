@@ -2,7 +2,7 @@
     <div style="background:var(--bg, #fff); padding:2rem; border-radius:0.75rem; min-width:320px;">
         <h3 style="margin:0 0 1rem 0;">Nouveau client</h3>
 
-        <form id="form-nouveau-client" action="/createClient" method="POST">
+        <form id="form-nouveau-client" method="POST">
             <div style="display:flex; flex-direction:column; gap:1rem;">
 
                 <div>
@@ -16,7 +16,7 @@
                 </div>
 
                 <div>
-                    <label for="ville">Email</label>
+                    <label for="ville">Ville</label>
                     <input type="text" id="ville" name="ville" class="form-select" placeholder="" >
                 </div>
 
