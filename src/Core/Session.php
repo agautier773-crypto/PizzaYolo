@@ -39,8 +39,8 @@ class Session{
     {
         $_SESSION[$key] = $value;
     }
-    public static function setUser(int $id) {
-        $_SESSION["user"] = $id;
+    public static function setUser(int $id_employe) {
+        $_SESSION["employe"] = $id_employe;
     }
 
 }

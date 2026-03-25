@@ -16,10 +16,17 @@ class Employe extends Model{
 
     public string $role= "";
 
+    public string $password="";
+
     public array $fillable = [
         "nom",
         "role",
+        "password"
     ];
+
+    public function GetRole(){
+        return [$this->role];
+    }
 
 
 }

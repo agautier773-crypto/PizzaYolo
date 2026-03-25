@@ -2,51 +2,52 @@
 
 namespace App\Core;
 
-use App\Models\User;
+use App\Models\Employe;
 
 class Auth{
-    public static ?User $user = null;
+    public static ?Employe $employe = null;
 
     public static function check(): bool{
-        return Session::has('user');
+        return Session::has('employe');
     }
 
-    public static function user(){
-        if (!self::$user) {
-            self::$user = (new User())->find(self::id());
-            return self::$user;
+    public static function employe(){
+        if (!self::$employe) {
+            self::$employe = (new Employe())->find(self::id());
+            return self::$employe;
         }
-        return self::$user;
+        return self::$employe;
     }
 
     public static function id(): ?int{
-        if (Session::has('user')) {
-            return Session::get("user");
+        if (Session::has('employe')) {
+            return Session::get("employe");
         }
         return null;
     }
 
     public static function attempt($validated): void{
-        $user = (new User())->findBy("email", $validated["email"], true);
-        if ($user) {
-            if (password_verify($validated["password"], $user->password)) {
-                self::login($user);
+        $employe = (new Employe())->findBy("nom", $validated["nom"], true);
+        if ($employe) {
+            if (password_verify($validated["password"], $employe->password)) {
+                self::login($employe);
+                return;
             }
         }
-        Session::setFlash("error", "combo mail/mdp erroné !");
+        Session::setFlash("error", "combo nom / mdp erroné !");
         header("location: /login");
         exit;
     }
 
-    public static function login(User $user): void{
-        Session::setUser($user->id);
+    public static function login(Employe $employe): void{
+        Session::setUser($employe->id_employe);
         Session::setFlash("success", "Connexion réussie");
-        header("location: /tache");
+        header("location: /");
         exit;
     }
 
     public static function logout(): void{
-        unset($_SESSION["user"]);
+        unset($_SESSION["employe"]);
         Session::setFlash("success", "Vous êtes bien deconnecté");
         header("Location: /login");
         exit;

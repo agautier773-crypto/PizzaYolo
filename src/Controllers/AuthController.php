@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function attemptLogin(): void
     {
         $validator = new WizardValidator($_POST, [
-            "email" => "required",
+            "nom" => "required",
             "password" => "required",
         ]);
 
