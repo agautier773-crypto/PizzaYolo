@@ -14,13 +14,13 @@ INSERT INTO pizza (prix, nom, ingredients) VALUES
 (11.50, 'bolognaise', 'base tomate, viande hachée, oignons, tomate'),
 (8.50, 'kebab', 'base tomate, viande kebab, sauce blanche, oignons');
 
-INSERT INTO commande (date, etat, id_client, id_employe) VALUES
-('2024-03-01 12:00:00', 'LIVRER', 1, 1),
-('2024-03-02 19:30:00', 'PRETE', 2, 2),
-('2024-03-03 20:00:00', 'EN_PREPARATION', 3, 1),
-('2024-03-05 13:00:00', 'LIVRER', 1, 1),
-('2024-03-06 20:00:00', 'EN_PREPARATION', 1, 2),
-('2024-03-04 18:45:00', 'PAYE', 4, 1);
+INSERT INTO commande (date, etat, id_client) VALUES
+('2024-03-01 12:00:00', 'LIVRER', 1),
+('2024-03-02 19:30:00', 'PRETE', 2),
+('2024-03-03 20:00:00', 'EN_PREPARATION', 3),
+('2024-03-05 13:00:00', 'LIVRER', 1),
+('2024-03-06 20:00:00', 'EN_PREPARATION', 1),
+('2024-03-04 18:45:00', 'PAYE', 4);
 
 
 INSERT INTO commande_pizza (id_commande, id_pizza, quantite) VALUES

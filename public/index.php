@@ -25,7 +25,10 @@ $router
     ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")
     ->get("/Delete/{id}", App\Controllers\CommandeController::class."::delete")
     ->get("/create", App\Controllers\CommandeController::class."::create")
-    ->post("/create", App\Controllers\CommandeController::class."::createClient")
+
+    ->post("/api/clients", App\Controllers\ClientController::class."::createClient")
+
+    ->post("/create", App\Controllers\CommandeController::class."::store")
 
     ->get("/pizza", \App\Controllers\PizzaController::class."::home")
     ->get("/pizza/create", App\Controllers\PizzaController::class."::create")
@@ -34,7 +37,7 @@ $router
     ->get("/pizza/update/{id}", App\Controllers\PizzaController::class."::edit")
     ->post("/pizza/update/{id}", App\Controllers\PizzaController::class."::updatePizza")
     // gestion des clients
-    ->post("/clients", App\Controllers\CommandeController::class."::createClient")
+    //->post("/clients", App\Controllers\CommandeController::class."::createClient")
 
 
     ->get("/login", App\Controllers\AuthController::class . "::login")

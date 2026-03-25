@@ -126,27 +126,17 @@
         color: #fff;
     }
 </style>
-<?php
-if(isset($commande->id_commande)){
-    $action = "update";
-    $actionUri = "/update/".$commande->id_commande;
-}else{
-    $action = "create";
-    $actionUri = "/create";
-}
-?>
-
 <div class="content">
     <div class="page-header">
         <span class="page-title">Nouvelle Commande</span>
     </div>
 <!-- Form client -->
     <div class="card">
-        <form action="<?=$actionUri?>" method="POST">
+        <form action="/create" method="POST">
             <div class="ligne" style="margin-bottom:1rem;">
-                <label for="client">Client</label>
+                <label for="id_client">Client</label>
                 <div style="display:flex; gap:0.5rem; align-items:center;">
-                    <select id="client" name="id_client" class="form-select" required>
+                    <select id="id_client" name="id_client" class="form-select" value="<?=$clients->id_client?>" required>
                         <option disabled selected>Choisir un client</option>
                         <?php foreach ($clients as $c): ?>
                             <option value="<?= htmlspecialchars($c->id_client) ?>">
@@ -169,7 +159,7 @@ if(isset($commande->id_commande)){
                 <div class="ligne" data-index="0" style="margin-bottom:1rem;">
                     <div class="mb-4">
                         <label class="form-label">Pizza <span style="color:var(--cyan)">*</span></label>
-                        <select name="lignes[0][id_pizza]" class="form-select" required>
+                        <select id = "pizza" name="pizza" class="form-select" required>
                             <option disabled selected> Choisir une Pizza </option>
                             <?php foreach ($pizza as $p): ?>
                                 <option
@@ -196,11 +186,14 @@ if(isset($commande->id_commande)){
             <!-- prix total commande -->
             <div class="field" style="margin-top:1rem;">
                 <label>Total (€)</label>
-                <input type="text" id="total" name="total" readonly value="0.00">
+                <input type="text" id="montant" name="montant" readonly>
             </div>
             <div class="field">
                 <label for="commentaires"> Commentaires </label>
                 <input type="text" id="commentaires" name="commentaires">
+            </div>
+            <div class="btn">
+                <button class="btn-submit" type="submit">Créer la commande</button>
             </div>
         </form>
         <?php require_once 'modalClient.php' ?>
@@ -275,7 +268,7 @@ if(isset($commande->id_commande)){
             total += price * qty;
         });
 
-        document.getElementById('total').value = total.toFixed(2);
+        document.getElementById('montant').value = total.toFixed(2);
     }
 
     // attache le recalcul sur la première ligne
@@ -308,7 +301,7 @@ if(isset($commande->id_commande)){
         const formData = new FormData(this);
 
         //Envoie des données au serveur
-        fetch('/create', {
+        fetch('/api/clients', {
             method: 'POST',
             body: formData
         })
@@ -316,7 +309,7 @@ if(isset($commande->id_commande)){
             .then(response => response.json())
             .then(data => {
                 // Crée et ajoute le nouveau client dans le select
-                const select = document.getElementById('client');
+                const select = document.getElementById('id_client');
                 const option = document.createElement('option');
                 option.value = data.id_client;
                 option.textContent = data.nom;
@@ -328,7 +321,7 @@ if(isset($commande->id_commande)){
                 closeModalClient();
             })
             .catch(err => {
-                console.error('Erreur fetch:', err);
+                console.error('Erreur fetch:', err)
             });
     });
 

@@ -63,53 +63,6 @@ class CommandeController extends Controller{
     }
 
     /**
-     * Reception des requêtes de création de client
-     *
-     * Path : POST sur /clients
-     * @return void
-     */
-    public function createClient() {
-
-        // on récupère les informations provenant de la requête POST
-        // et on les vérifie
-        $validator = new WizardValidator($_POST, [
-            "nom" => "required",
-            "rue" => "required",
-            "ville" => "required",
-            "code_postal" => "required",
-            "telephone" => "required",
-        ]);
-
-        if ($validator->fails()){
-            # erreurs
-            foreach ($validator->errors() as $error){
-                Session::setFlash("danger", $error);
-            }
-            Session::set("old", $_POST);
-            header("Location: /create");
-            exit;
-        }
-
-        $validated = $validator->validated();
-
-        $client = new Client();
-        $client->fill($validated);
-
-        $client->save();
-
-        // renvoie du Json au js
-        http_response_code(200);
-        echo json_encode(['id_client' => $client->id_client, 'nom' => $client->nom]);
-        exit;
-
-
-        // traitement pour nouveau client
-       // $client = new Client($_POST[???], $_POST[???], $_POST[???], $_POST[???]);
-        // $client->save();
-
-    }
-
-    /**
      * Rend la vue "commande"
      *
      * Réponse à GET sur /commande
@@ -126,6 +79,39 @@ class CommandeController extends Controller{
             'pizza'=>$pizza,
         ]);
 
+    }
+
+    public function store(){
+        $validator = new WizardValidator($_POST, [
+            "id_client" => "required",
+            "montant" => "required",
+            "pizza" => "required",
+            "date" => "required",
+            "commentaires" => "nullable",
+        ]);
+
+        if ($validator->fails()){
+            # erreurs
+            foreach ($validator->errors() as $error){
+                Session::setFlash("danger", $error);
+            }
+            Session::set("old", $_POST);
+            header("Location: /create");
+            exit;
+        }
+
+        $validated = $validator->validated();
+        $validated["etat"]="PAYE";
+
+        $commande = new Commande();
+
+        $commande->fill($validated);
+
+        $commande->save();
+        $commande->sync(Pizza::class, (array)$_POST["pizza"]);
+
+        Session::setFlash("success", "Commande créer !");
+        $this->redirect("/");
     }
 
 }

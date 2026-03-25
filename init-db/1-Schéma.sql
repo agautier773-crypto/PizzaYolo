@@ -35,9 +35,7 @@ CREATE TABLE IF NOT EXISTS commande(
     commentaires VARCHAR(255),
    id_client INT NOT NULL,
    montant decimal (10,2) DEFAULT 0,
-    id_employe INT NOT NULL,
    PRIMARY KEY(id_commande),
-   FOREIGN KEY(id_employe) REFERENCES employe(id_employe),
    FOREIGN KEY(id_client) REFERENCES client(id_client)
 )ENGINE=InnoDB;
 
