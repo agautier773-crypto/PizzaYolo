@@ -31,8 +31,10 @@ trait HasRelationships {
         $targetTable =  (new $targetClass())->getNameTable();
         $foreignKey =  "id_" . $this->getNameTable();
         $targetKey = "id_" . $targetTable;
+
         $sql = "SELECT {$targetTable}.* FROM {$targetTable} JOIN {$pivotTable} 
             ON {$targetTable}.{$targetKey} = {$pivotTable}.{$targetKey} WHERE {$pivotTable}.{$foreignKey} = :id";
+
         return $this->readQuery($sql, ["id" => $this->$targetPk], false, $targetClass);
     }
 
@@ -51,13 +53,18 @@ trait HasRelationships {
     }
 
     /**
-     * Définit une relation plusieurs à un (N:1)
+     * Définit une relation plusieurs à un (0:1)
      * va voir si il y a une clé étrangere dans une table
-     * @param string $targetClass Class cible
+     *
+     * Permet de charger un objet de la classe ciblée ($targetClass).
+     *
+     * Peut être utilisée comme "hasOne"
+     *
+     * @param string $targetClass Classe cible
      * @param string $foreignKey Clé étrangère
      * @return Model|array
      */
-    public function belongsTo(string $targetClass, string $foreignKey):Model|array|bool
+    public function belongsTo(string $targetClass, string $foreignKey): Model | array
     {
         $targetTable = (new $targetClass())->getNameTable();
         $targetPk = $targetClass::$primaryKey;

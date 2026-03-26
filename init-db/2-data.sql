@@ -5,8 +5,9 @@ INSERT INTO client (nom, rue, code_postal, ville, telephone) VALUES
 ('Sophie', '3 boulevard Victor Hugo', '40100', 'Dax', '09545489534');
 
 INSERT INTO employe(nom, role, password) VALUES
-('Keven', 'CUISINIER', 'azerty'),
-('Maxime', 'GUICHETIER', 'azerty');
+('Keven', 'CUISINIER', '$2y$10$HehX.vMdfdkv2C5eCBPg5e/HdIjqF7U/oArxOOXpw35Rf.so4Wv/a'),
+('Maxime', 'GUICHETIER', '$2y$10$HehX.vMdfdkv2C5eCBPg5e/HdIjqF7U/oArxOOXpw35Rf.so4Wv/a'),
+('Philippe', 'PATRON', '$2y$10$HehX.vMdfdkv2C5eCBPg5e/HdIjqF7U/oArxOOXpw35Rf.so4Wv/a');
 
 INSERT INTO pizza (prix, nom, ingredients) VALUES
 (10.50, 'chèvre-miel', 'base tomate, chevre, miel, noix'),

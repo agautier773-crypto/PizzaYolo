@@ -159,7 +159,7 @@
                 <div class="ligne" data-index="0" style="margin-bottom:1rem;">
                     <div class="mb-4">
                         <label class="form-label">Pizza <span style="color:var(--cyan)">*</span></label>
-                        <select id = "pizza" name="pizza" class="form-select" required>
+                        <select id = "pizza" name="pizzas[0][id_pizza]" class="form-select" required>
                             <option disabled selected> Choisir une Pizza </option>
                             <?php foreach ($pizza as $p): ?>
                                 <option
@@ -175,7 +175,7 @@
                     </div>
                     <div class="qty-wrap">
                         <button type="button" class="qty-btn" onclick="chgQty(this,-1)">−</button>
-                        <input type="number" name="lignes[0][quantite]" class="qty-input" value="1" min="1" max="20" readonly/>
+                        <input type="number" name="pizzas[0][quantite]" class="qty-input" value="1" min="1" max="20" readonly/>
                         <button type="button" class="qty-btn" onclick="chgQty(this,1)">+</button>
                     </div>
                 </div>
@@ -299,6 +299,7 @@
 
         //recup les données envoyées
         const formData = new FormData(this);
+        console.log(formData);
 
         //Envoie des données au serveur
         fetch('/api/clients', {

@@ -23,12 +23,24 @@ class CommandeController extends Controller{
         ]);
     }
 
-    public function show($id):void{
+    public function show($id) : void {
         $c = new Commande();
+        // on retrouve un objet de la classe commande
         $c = $c->find($id);
+
+        // on souhaite retrouver les pizzas associées à la commanbde
+        $lignesCommande = (new CommandePizza())->findBy("id_commande", $c->id_commande);
+
+        // chargement des pizzas associées à chaque ligne de commande
+        foreach ($lignesCommande as $ligneCommande) {
+            $ligneCommande->loadPizza();
+        }
+
+        // on modifie les lignes de commande de la commande concernée
+        $c->lignesCommande = $lignesCommande;
+
         View::render("Commande.show", [
-            "commande" => $c,
-            "pizzas" => (new Pizza()) -> findAll(),
+            "commande" => $c
         ]);
     }
 
@@ -85,7 +97,7 @@ class CommandeController extends Controller{
         $validator = new WizardValidator($_POST, [
             "id_client" => "required",
             "montant" => "required",
-            "pizza" => "required",
+            "pizzas" => "required",
             "date" => "required",
             "commentaires" => "nullable",
         ]);
@@ -108,7 +120,8 @@ class CommandeController extends Controller{
         $commande->fill($validated);
 
         $commande->save();
-        $commande->sync(Pizza::class, (array)$_POST["pizza"]);
+        $pizza = $validated["pizzas"] ?? [];
+        $commande->syncPizza($pizza);
 
         Session::setFlash("success", "Commande créer !");
         $this->redirect("/");

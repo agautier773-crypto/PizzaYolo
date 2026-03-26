@@ -176,11 +176,13 @@
             </thead>
             <tbody>
 
-                <?php foreach ($commande->quantitePizza() as $pizza):?>
+                <?php foreach ($commande->lignesCommande as $ligneCommande):
+                        $pizza = $ligneCommande->pizza;
+                    ?>
                 <tr>
                     <td><?= $pizza->nom ?></td>
                     <td><?= $pizza->ingredients ?></td>
-                    <td><span> <?= $pizza->quantite ?></span></td>
+                    <td><span> <?= $ligneCommande->quantite ?></span></td>
                     <td><span class="badge-etat <?= match($commande->etat){
                             'EN_PREPARATION' => 'badge-en-cours',
                             'LIVRER'                 => 'badge-validee',

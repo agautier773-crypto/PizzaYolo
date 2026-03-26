@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS commande(
 CREATE TABLE IF NOT EXISTS commande_pizza(
    id_pizza INT,
    id_commande INT NOT NULL,
-   quantite INT NOT NULL,
+   quantite INT,
    PRIMARY KEY(id_pizza, id_commande),
    FOREIGN KEY(id_pizza) REFERENCES pizza(id_pizza),
    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)

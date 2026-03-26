@@ -54,9 +54,11 @@ class Model {
      * @param int $id
      * @return array
      */
-    public function find(int $id){
+    public function find(int $id) {
         $primaryKey = static::$primaryKey;
+
         $sql = "SELECT * FROM {$this->getNameTable()} WHERE {$primaryKey} = :{$primaryKey}";
+
         return $this->readQuery($sql, [ $primaryKey=> $id], true);
     }
 
@@ -134,8 +136,24 @@ class Model {
      */
     public function getNameTable(){
         $resultat_parsing = explode("\\", $this->table);
+        // récupération du nom de la classe
         $last_index = count($resultat_parsing) - 1;
-        return strtolower($resultat_parsing[$last_index]);
+
+        // traitement REGEX TROP STYLEE pour en déduire le nom de la table
+        $re = '/([A-Z][a-z]*)/m';
+        preg_match_all($re, $resultat_parsing[$last_index], $matches, PREG_SET_ORDER, 0);
+
+        $tableName = "";
+        $count = count($matches);
+        for ($i = 0; $i < $count; $i++) {
+            // sous tableau contient : [match, group]
+            $tableName .= strtolower($matches[$i][0]);
+            if ($i != $count - 1) {
+                $tableName .= "_";
+            }
+        }
+
+        return $tableName;
     }
 
 # DQL = Data Query Language
