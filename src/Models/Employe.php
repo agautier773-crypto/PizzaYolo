@@ -28,5 +28,12 @@ class Employe extends Model{
         return [$this->role];
     }
 
+    public function save(){
+        if(!empty($this->password) && !str_starts_with($this->password, '$2y$')){
+            $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+        }
+        parent::save();
+    }
+
 
 }

@@ -84,4 +84,12 @@ class Commande extends Model{
 
         }
     }
+
+    //recupere le nombre de commande de chaque client
+    // return une seule valeur sans faire un tableau
+    public function nombreCommande(int $id_client){
+        $stmt = $this->pdo->prepare( "SELECT COUNT(*) FROM commande WHERE id_client = :id_client");
+        $stmt->execute([":id_client" => $id_client]);
+        return $stmt->fetchColumn();
+    }
 }

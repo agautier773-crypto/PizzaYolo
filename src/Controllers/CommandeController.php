@@ -53,7 +53,6 @@ class CommandeController extends Controller{
             $this->redirect("/");
             return;
         }
-
         // mets a jour que l'etat from permet de convertir la string recu en enum php
         $commande->etat = Etat_commande::from($etatValue)->value;
         $commande->save();
@@ -73,7 +72,6 @@ class CommandeController extends Controller{
         Session::setFlash("success", "Commande supprimée");
         $this->redirect("/");
     }
-
     /**
      * Rend la vue "commande"
      *
@@ -92,7 +90,6 @@ class CommandeController extends Controller{
         ]);
 
     }
-
     public function store(){
         $validator = new WizardValidator($_POST, [
             "id_client" => "required",
@@ -101,7 +98,6 @@ class CommandeController extends Controller{
             "date" => "required",
             "commentaires" => "nullable",
         ]);
-
         if ($validator->fails()){
             # erreurs
             foreach ($validator->errors() as $error){
@@ -115,13 +111,31 @@ class CommandeController extends Controller{
         $validated = $validator->validated();
         $validated["etat"]="PAYE";
 
+        $montant = (float) $validated["montant"];
+        $pizzas = $validated["pizzas"] ?? [];
+        $id_client = (int) $validated["id_client"];
+
+        // remise toute les 3 commandes
         $commande = new Commande();
+        $nbCommande = $commande-> nombreCommande($id_client);
+        if (($nbCommande + 1) % 3 === 0){
+            $montant -= $montant * 0.10;
+            Session::setFlash("info", "Remise de 10% appliquée ");
+        }
+        // remise de 5% totue les 5 pizzas
+        $totalPizzas = array_sum(array_column($pizzas, "quantite"));
 
+        if($totalPizzas > 5){
+            $montant -= $montant * 0.05;
+            Session::setFlash("info", "Remise de 5% appliqué");
+        }
         $commande->fill($validated);
-
         $commande->save();
-        $pizza = $validated["pizzas"] ?? [];
-        $commande->syncPizza($pizza);
+        $commande->syncPizza($pizzas);
+
+        // mise a jour du prix apres le syncPizza car le trigger sur le montant double le montant
+        $commande->montant = round($montant, 2);
+        $commande->update();
 
         Session::setFlash("success", "Commande créer !");
         $this->redirect("/");
