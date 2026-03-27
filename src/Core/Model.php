@@ -106,7 +106,8 @@ class Model {
      * @throws Exception
      */
 
-    public function save(){
+    public function save()
+    {
         $primaryKey = static::$primaryKey;
         if (!isset($this->$primaryKey)){
             $this->create();

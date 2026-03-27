@@ -106,16 +106,6 @@
         color: var(--text-primary);
     }
 
-    .badge-etat {
-        font-family: 'DM Mono', monospace;
-        font-size: 0.72rem;
-        font-weight: 500;
-        padding: 0.3rem 0.65rem;
-        border-radius: 5px;
-        letter-spacing: 0.03em;
-        display: inline-block;
-    }
-
     .badge-en-cours  { background: var(--warning-light); color: var(--warning); }
     .badge-validee   { background: var(--success-light);  color: var(--success); }
     .badge-annulee   { background: var(--danger-light);   color: var(--danger);  }
@@ -186,7 +176,6 @@
                     <td><?= $pizzas-> prix ?> €</td>
                     <td>
                         <div class="actions-cell">
-                            <a href="/show/<?= $pizzas->id_pizza?>" class="btn-action btn-show">Show</a>
                             <a href="/pizza/update/<?= $pizzas->id_pizza?>" class="btn-action btn-show">Update</a>
                             <a href="/pizza/delete/<?=$pizzas->id_pizza?>" class="btn-action btn-delete">Delete</a>
                         </div>

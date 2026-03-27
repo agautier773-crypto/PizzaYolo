@@ -16,6 +16,7 @@ use PHPUnit\Util\Test;
 
 class CommandeController extends Controller{
 
+    // Rend la vue liste des commandes
     public function home():void{
 
         View::render("Commande.index",[
@@ -24,27 +25,18 @@ class CommandeController extends Controller{
         ]);
     }
 
+    // Rend la vu sur une commande btn show
     public function show($id) : void {
-        $c = new Commande();
-        // on retrouve un objet de la classe commande
-        $c = $c->find($id);
-
-        // on souhaite retrouver les pizzas associées à la commanbde
-        $lignesCommande = (new CommandePizza())->findBy("id_commande", $c->id_commande);
-
-        // chargement des pizzas associées à chaque ligne de commande
-        foreach ($lignesCommande as $ligneCommande) {
-            $ligneCommande->loadPizza();
-        }
-
-        // on modifie les lignes de commande de la commande concernée
-        $c->lignesCommande = $lignesCommande;
+        $c = (new Commande())->find($id);
+        $c->loadLigneCommande();
 
         View::render("Commande.show", [
             "commande" => $c
         ]);
     }
 
+    // btn état
+    // Permet de mettre a jour l'état d'une commande
     public function updateEtat($id){
         $id = intval($id);
         $commande = (new Commande()) -> find($id);
@@ -61,6 +53,8 @@ class CommandeController extends Controller{
         $this->redirect("/");
     }
 
+    // Supprime une commande et ses lignes associées
+    //Interdit aux cuisiniers
     public function delete($id)
     {
         if (Auth::employe()->role === "CUISINIER"){
@@ -96,6 +90,9 @@ class CommandeController extends Controller{
         ]);
 
     }
+    /**
+     * @throws \Exception
+     */
     public function store(){
         $validator = new WizardValidator($_POST, [
             "id_client" => "required",
@@ -121,20 +118,10 @@ class CommandeController extends Controller{
         $pizzas = $validated["pizzas"] ?? [];
         $id_client = (int) $validated["id_client"];
 
-        // remise toute les 3 commandes
-        $commande = new Commande();
-        $nbCommande = $commande-> nombreCommande($id_client);
-        if (($nbCommande + 1) % 3 === 0){
-            $montant -= $montant * 0.10;
-            Session::setFlash("info", "Remise de 10% appliquée ");
-        }
-        // remise de 5% totue les 5 pizzas
-        $totalPizzas = array_sum(array_column($pizzas, "quantite"));
 
-        if($totalPizzas > 5){
-            $montant -= $montant * 0.05;
-            Session::setFlash("info", "Remise de 5% appliqué");
-        }
+        $commande = new Commande();
+        // remise toute les 3 commandes
+        $montant = $commande->calculAvecRemise($montant, $id_client, $pizzas);
         $commande->fill($validated);
         $commande->save();
         $commande->syncPizza($pizzas);

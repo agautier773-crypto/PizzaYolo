@@ -1,7 +1,7 @@
 <?php
 
 
-function create_user(string $info){
+function create_employe(string $info){
     $u = new App\Models\Client();
     $u->nom = $info;
     $u->rue = $info;
