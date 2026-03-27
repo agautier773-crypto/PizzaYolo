@@ -1,3 +1,8 @@
+<?php
+
+use App\Core\Auth;
+
+?>
 <style>
     :root {
         --bg: #f5f4f1;
@@ -201,7 +206,9 @@
                         <a href="#" class="btn-action btn-etat" data-bs-toggle="modal" data-bs-target="#modalEtat" data-id="<?= $commande->id_commande?>">
                             état
                         </a>
+                        <?php if (Auth::employe()->role !== "CUISINIER"): ?>
                         <a href="/Delete/<?=$commande->id_commande?>" class="btn-action btn-delete">Delete</a>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
