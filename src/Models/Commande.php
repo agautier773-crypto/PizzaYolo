@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
+use App\Core\Session;
 use App\Models\CommandePizza;
 use App\Core\Traits\HasRelationships;
 use App\Enum\Etat_commande;
@@ -55,7 +56,9 @@ class Commande extends Model{
         return $this->readQuery($sql, ["id"=>$this->id_commande], false, CommandePizza::class);
     }
 
-    public function syncPizza($pizzas)
+
+    //sync pour gérer la quantité dans la table d'association
+    public function syncPizza($pizzas): bool
     {
     $primaryKey = static::$primaryKey;
         try {
@@ -84,12 +87,38 @@ class Commande extends Model{
 
         }
     }
-
     //recupere le nombre de commande de chaque client
     // return une seule valeur sans faire un tableau
     public function nombreCommande(int $id_client){
         $stmt = $this->pdo->prepare( "SELECT COUNT(*) FROM commande WHERE id_client = :id_client");
         $stmt->execute([":id_client" => $id_client]);
         return $stmt->fetchColumn();
+    }
+
+    // chargement des pizzas associées à chaque ligne de commande
+    // on modifie les lignes de commande de la commande concernée
+    // on souhaite retrouver les pizzas associées à la commanbde
+    public function loadLigneCommande(){
+        $lignesCommande = (new CommandePizza())->findBy("id_commande", $this->id_commande);
+        foreach ($lignesCommande as $ligneCommande) {
+            $ligneCommande->loadPizza();
+        }
+        $this->lignesCommande = $lignesCommande;
+    }
+
+    public function calculAvecRemise(float $montant, int  $id_client, array $pizzas){
+        $nbCommande = $this->nombreCommande($id_client);
+        if (($nbCommande + 1) % 3 === 0){
+            $montant -= $montant * 0.10;
+            Session::setFlash("info", "Remise de 10% appliquée ");
+        }
+        // remise de 5% totue les 5 pizzas
+        $totalPizzas = array_sum(array_column($pizzas, "quantite"));
+
+        if($totalPizzas > 5){
+            $montant -= $montant * 0.05;
+            Session::setFlash("info", "Remise de 5% appliqué");
+        }
+        return $montant;
     }
 }

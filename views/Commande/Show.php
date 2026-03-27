@@ -80,54 +80,6 @@
         color: var(--text-muted);
     }
 
-    /* Lignes pizzas */
-    .pizza-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.85rem 1.1rem;
-        border-bottom: 1px solid var(--border);
-        gap: 1rem;
-    }
-
-    .pizza-row:last-child {
-        border-bottom: none;
-    }
-
-    .pizza-name {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--text-primary);
-        flex: 1;
-    }
-
-    .pizza-qty {
-        font-family: 'DM Mono', monospace;
-        font-size: 0.82rem;
-        font-weight: 500;
-        background: var(--accent-light);
-        color: var(--accent);
-        border: 1px solid #c0d8ee;
-        padding: 0.25rem 0.75rem;
-        border-radius: 5px;
-        white-space: nowrap;
-    }
-
-    /* Commentaires */
-    .comment-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .comment-body {
-        padding: 1rem 1.1rem;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        line-height: 1.6;
-        min-height: 80px;
-    }
     .table-card tbody td {
         padding: 1rem 1.1rem;
         vertical-align: middle;

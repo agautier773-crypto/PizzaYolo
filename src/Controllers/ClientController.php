@@ -8,6 +8,7 @@ use App\Models\Client;
 
 class ClientController extends \App\Core\Controller
 {
+    //Création d'un nouveau client
     public function createClient() {
 
         // on récupère les informations provenant de la requête POST

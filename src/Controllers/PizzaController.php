@@ -13,6 +13,8 @@ class PizzaController extends Controller {
 
     /**
      * @throws Exception
+     * Rend la vu du formulaire de création de pizza
+     * Reserver au patron
      */
     public function create(){
 
@@ -23,6 +25,9 @@ class PizzaController extends Controller {
 
     /**
      * @throws Exception
+     * Création d'une nouvelle pizza en bdd
+     * Valide et enregistre la nouvelle pizza
+     * Redirige vers le formulaire avec les erreurs si la validation echoue
      */
     public function store(){
        $validator = new Wizardvalidator($_POST, [
@@ -50,12 +55,15 @@ class PizzaController extends Controller {
 
     }
 
+    // Affiche la liste des pizzas dispo
     public function home() {
         View::render("pizza.list", [
             "pizza" => (new Pizza()) ->findAll()
         ]);
     }
 
+    // Supprime une pizza par son identifiant
+    // Reservé au patron
     public function delete($id){
         $p = (new Pizza())->find($id);
         $p->delete($id);
@@ -64,6 +72,7 @@ class PizzaController extends Controller {
         $this->redirect("/pizza");
     }
 
+    // Affiche le formulaire pour modifier une pizza
     public function edit($id){
         $id = intval($id);
         $pizza = (new Pizza())->find($id);
@@ -73,6 +82,8 @@ class PizzaController extends Controller {
         ]);
     }
 
+    // Valide et met a jour une pizza existante en bdd
+    // Redirige vers le formulaire avec les erreurs si la validation échoue
     public function updatePizza($id){
         $id = intval($id);
         $pizza = (new Pizza())->find($id);
@@ -93,8 +104,6 @@ class PizzaController extends Controller {
         $validated = $validator ->validated();
         $pizza->fill($validated);
         $pizza->save();
-
-
 
         $this->redirect("/pizza");
     }
