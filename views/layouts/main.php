@@ -21,12 +21,15 @@ use App\Core\Auth;
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand" href="/"/></i>PizzaYolo</a>
             <div class="d-flex gap-2">
+                <?php if(Auth::check()): ?>
                     <a href="/" class="btn btn-outline-c btn-sm px-3"> Liste des Commandes en cours</a>
                     <a href="/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle commande</a>
                     <a href="/pizza/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle Pizza</a>
                     <a href="/pizza" class="btn btn-outline-c btn-sm px-3"> Liste des Pizzas</a>
                     <a href="/logout" class="btn btn-outline-c btn-sm px-3">Se déconnecter</a>
+                <?php else: ?>
                     <a href="/login" class="btn btn-outline-c btn-sm px-3">Se connecter</a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
