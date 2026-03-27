@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Session;
 use App\Core\View;
@@ -62,6 +63,11 @@ class CommandeController extends Controller{
 
     public function delete($id)
     {
+        if (Auth::employe()->role === "CUISINIER"){
+            Session::setFlash("danger", "Vous n'avez pas les droits pour supprimer une commande.");
+            $this->redirect("/");
+            return;
+        }
         $c = (new Commande())->find($id);
         if (!$c) {
             $this->redirect("/");
