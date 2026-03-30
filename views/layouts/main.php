@@ -24,8 +24,10 @@ use App\Core\Auth;
                 <?php if(Auth::check()): ?>
                     <a href="/" class="btn btn-outline-c btn-sm px-3"> Liste des Commandes en cours</a>
                     <a href="/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle commande</a>
-                    <a href="/pizza/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle Pizza</a>
                     <a href="/pizza" class="btn btn-outline-c btn-sm px-3"> Liste des Pizzas</a>
+                <?php if(Auth::employe()->role === "PATRON"):?>
+                    <a href="/pizza/create" class="btn btn-outline-c btn-sm px-3"> Nouvelle Pizza</a>
+                <?php endif; ?>
                     <a href="/logout" class="btn btn-outline-c btn-sm px-3">Se déconnecter</a>
                 <?php else: ?>
                     <a href="/login" class="btn btn-outline-c btn-sm px-3">Se connecter</a>

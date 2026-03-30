@@ -184,6 +184,7 @@ use App\Core\Auth;
             </tr>
             </thead>
             <tbody>
+
             <?php foreach ($commandes as $commande) :?>
             <tr>
                 <td><span class="order-id"><?= $commande->id_commande ?></span></td>
@@ -193,7 +194,7 @@ use App\Core\Auth;
                 <td><span class="badge-etat <?= match($commande->etat){
                         'EN_PREPARATION' => 'badge-en-cours',
                         'LIVRER'                 => 'badge-validee',
-                        'PRETE'                 => 'badge-en-cours',
+                        'PRETE'                 => 'badge-livree',
                         'PAYE'                  => 'badge-livree',
                         default                   => 'badge-en-cours'
                     } ?>">
@@ -214,6 +215,8 @@ use App\Core\Auth;
             </tr>
             <?php endforeach;?>
             </tbody>
+        </table>
+    </div>
             <?php require_once 'modalEtat.php' ?>
 
 

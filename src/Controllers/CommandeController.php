@@ -18,9 +18,19 @@ class CommandeController extends Controller{
 
     // Rend la vue liste des commandes
     public function home():void{
+        $commandes = (new Commande())->findAll();
 
+        if(Auth::employe()->role ==="CUISINIER"){
+            $commandesFiltree = [];
+            foreach ($commandes as $commande){
+                if($commande->etat === 'EN_PREPARATION' || $commande->etat === 'PRETE'){
+                    $commandesFiltree[] = $commande;
+                }
+            }
+            $commandes = $commandesFiltree;
+        }
         View::render("Commande.index",[
-            "commandes" => (new Commande()) -> findAll(),
+            "commandes" => $commandes,
             "client" => (new Client()) -> findAll(),
         ]);
     }
