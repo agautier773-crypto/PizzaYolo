@@ -15,6 +15,7 @@ use App\Enum\Etat_commande; ?>
                             <?php foreach (Etat_commande::cases() as $etat):?>
                                 <?php if ($etat === $commande->etat) continue; ?>
                                 <?php if (Auth::employe()->role === "CUISINIER" && !in_array($etat->value, ['PRETE', 'EN_PREPARATION'])) continue; ?>
+                                <?php if (Auth::employe()->role === "GUICHETIER" && !in_array($etat->value, ['PAYE', 'EN_PREPARATION', 'LIVRER'])) continue; ?>
                                 <option value="<?=$etat->value ?>">
                                     <?= $etat->value ?>
                                 </option>
