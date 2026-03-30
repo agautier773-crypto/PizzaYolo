@@ -1,4 +1,5 @@
-<?php use App\Enum\Etat_commande; ?>
+<?php use App\Core\Auth;
+use App\Enum\Etat_commande; ?>
 <div class="modal fade" id="modalEtat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -13,6 +14,7 @@
                         <select name="etat" id="etat" class="form-select">
                             <?php foreach (Etat_commande::cases() as $etat):?>
                                 <?php if ($etat === $commande->etat) continue; ?>
+                                <?php if (Auth::employe()->role === "CUISINIER" && !in_array($etat->value, ['PRETE', 'EN_PREPARATION'])) continue; ?>
                                 <option value="<?=$etat->value ?>">
                                     <?= $etat->value ?>
                                 </option>
