@@ -23,11 +23,11 @@ $router
    // ajout des routes
     ->get("/", App\Controllers\CommandeController::class ."::home")->middleware("auth")
     ->get("/show/{id}", App\Controllers\CommandeController::class ."::show")->middleware("auth")
-    ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")->middleware("auth")
+    ->post("/UpdateEtat/{id}", App\Controllers\CommandeController::class."::updateEtat")->middleware("auth")->middleware("csrf")
     ->get("/Delete/{id}", App\Controllers\CommandeController::class."::delete")->middleware("auth")
     ->get("/create", App\Controllers\CommandeController::class."::create")->middleware("auth")->middleware("role:GUICHETIER")
 
-    ->post("/api/clients", App\Controllers\ClientController::class."::createClient")->middleware("auth")->middleware("role:GUICHETIER")
+    ->post("/api/clients", App\Controllers\ClientController::class."::createClient")->middleware("auth")->middleware("role:GUICHETIER")->middleware("csrf")
 
     ->post("/create", App\Controllers\CommandeController::class."::store")->middleware("auth")->middleware("role:GUICHETIER")
 
