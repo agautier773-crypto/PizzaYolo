@@ -1,8 +1,14 @@
+<?php
+
+use App\Helpers\Csrf;
+
+?>
 <div id="modal-client" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">
     <div style="background:var(--bg, #fff); padding:2rem; border-radius:0.75rem; min-width:320px;">
         <h3 style="margin:0 0 1rem 0;">Nouveau client</h3>
 
         <form id="form-nouveau-client" method="POST">
+            <?= Csrf::field() ?>
             <div style="display:flex; flex-direction:column; gap:1rem;">
 
                 <div>
