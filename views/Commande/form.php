@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\Csrf;
+
+?>
 <style>
     .content { max-width: 520px; margin: 0 auto; padding: 2rem 1.5rem 0; }
 
@@ -133,6 +138,7 @@
 <!-- Form client -->
     <div class="card">
         <form action="/create" method="POST">
+            <?= Csrf::field() ?>
             <div class="ligne" style="margin-bottom:1rem;">
                 <label for="id_client">Client</label>
                 <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -180,18 +186,20 @@
                     </div>
                 </div>
             </div>
+            <div class="field">
+                <label for="commentaires"> Commentaires </label>
+                <input type="text" id="commentaires" name="commentaires">
+            </div>
             <button type="button" onclick="addLigne()" class="btn-add-row">
                 + Ajouter une pizza
             </button>
+
             <!-- prix total commande -->
             <div class="field" style="margin-top:1rem;">
                 <label>Total (€)</label>
                 <input type="text" id="montant" name="montant" readonly>
             </div>
-            <div class="field">
-                <label for="commentaires"> Commentaires </label>
-                <input type="text" id="commentaires" name="commentaires">
-            </div>
+
             <div class="btn">
                 <button class="btn-submit" type="submit">Créer la commande</button>
             </div>
@@ -221,6 +229,7 @@
         clone.setAttribute('data-index', i);
 
         // permet la construction d'un tableau pour le serveur
+        // regex pour réindexer les champs du formulaire
         clone.querySelectorAll('[name]').forEach(function (el) {
             el.name = el.name.replace(/\[\d+\]/, '[' + i + ']');
             if (el.tagName === 'SELECT') {
@@ -299,8 +308,7 @@
 
         //recup les données envoyées
         const formData = new FormData(this);
-        console.log(formData);
-
+        formData.append('csrf_token', document.querySelector('[name="csrf_token"]').value);
         //Envoie des données au serveur
         fetch('/api/clients', {
             method: 'POST',

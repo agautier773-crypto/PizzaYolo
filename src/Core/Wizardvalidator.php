@@ -49,19 +49,19 @@ class Wizardvalidator {
                     if(str_contains($fragement, ":")){
                         [$name_rule, $param] = explode(":", $fragement);
                         //var_dump("Pour le champ : {$field} on doit appliquer la regle : {$name_rule}($param)");
-                        $this->applyRules($name_rule, $field, $param, $this->data[$field]);
+                        $this->applyRules($name_rule, $field, $param, $this->data[$field] ?? null);
                     }else{
                         //var_dump("Pour le champ : {$field} on doit appliquer la regle : {$fragement}()");
-                        $this->applyRules($fragement, $field, "",$this->data[$field]);
+                        $this->applyRules($fragement, $field, "",$this->data[$field] ?? null);
                     }
                 }
             }else{
                 if(str_contains($rule, ":")){
                     [$name_rule, $param] = explode(":", $rule);
-                    $this->applyRules($name_rule, $field,"",$this->data[$field]);
+                    $this->applyRules($name_rule, $field,"",$this->data[$field] ?? null);
                 }else{
                     //var_dump("Pour le champ : {$field} on doit appliquer la regle : {$fragement}()2");
-                    $this->applyRules($rule, $field,"",$this->data[$field]);
+                    $this->applyRules($rule, $field,"",$this->data[$field] ?? null);
                 }
             }
         }

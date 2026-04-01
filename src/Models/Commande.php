@@ -106,14 +106,21 @@ class Commande extends Model{
         $this->lignesCommande = $lignesCommande;
     }
 
-    public function calculAvecRemise(float $montant, int  $id_client, array $pizzas){
-        $nbCommande = $this->nombreCommande($id_client);
-        if (($nbCommande + 1) % 3 === 0){
+    // Séparation logique Applique la remise
+    public function calculAvecRemise(float $montant, int  $id_client, array $pizzas)
+    {
+        // calcul remise 10% pour chaque 3 commandes
+        $nbCommandes = $this->nombreCommande($id_client);
+        $totalPizzas = array_sum(array_column($pizzas, "quantite"));
+        return $this->appliquerRemise($montant, $nbCommandes, $totalPizzas);
+    }
+
+// Calcul la remise sans interaction avec bdd
+    public function appliquerRemise($montant, $nbCommandes, $totalPizzas){
+        if (($nbCommandes + 1) % 3 === 0){
             $montant -= $montant * 0.10;
             Session::setFlash("info", "Remise de 10% appliquée ");
         }
-        // remise de 5% totue les 5 pizzas
-        $totalPizzas = array_sum(array_column($pizzas, "quantite"));
 
         if($totalPizzas > 5){
             $montant -= $montant * 0.05;

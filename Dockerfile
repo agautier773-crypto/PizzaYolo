@@ -3,6 +3,8 @@ FROM php:8.3-apache
 # gestion apache et PHP [obligé pour le front controller]
 # active le module de réécriture d'url via un .htacces d'apache
 # installe xdebug et active les extensions PHP nécessaires
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN apt-get update && apt-get install -y git zip unzip
 RUN a2enmod rewrite \
     && a2enmod headers \
     && docker-php-ext-install pdo pdo_mysql \
