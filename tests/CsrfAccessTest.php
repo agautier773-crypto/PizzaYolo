@@ -7,7 +7,6 @@ use App\Helpers\Interfaces\SessionInterface;
 use App\Helpers\Interfaces\RequestInterface;
 
 class CsrfAccessTest extends \PHPUnit\Framework\TestCase{
-
     // Si la session ne contient pas de token, isTokenValid retourne false
     public function test_csrfAccessAbsent():void{
 
@@ -21,19 +20,40 @@ class CsrfAccessTest extends \PHPUnit\Framework\TestCase{
         $csrf = new Csrf($session, $request);
         $this->assertFalse($csrf->isTokenValid());
     }
+    //Verifie que le token n'est pas falsifié
+    // Si falsifié retourne false
+    public function test_csrfFalsifie_echec():void{
+        //Crée un faux objet Session qui retourne le token
+        $session = $this->createMock(SessionInterface::class);
+        $session->expects($this->once())
+            ->method('get')
+            ->willReturn(['token'=> 'vrai_token',
+            ]);
 
-    // Si la session contient un token et form a le meme isTokenValid doit retourner True
-    public function test_csrfAccessValide():void{
+        $request = $this->createMock(RequestInterface::class);
+        $request->expects($this->once())
+            ->method('getPost')
+            ->willReturn('faux_token');
+
+        $csrf = new Csrf($session, $request);
+        $this->assertFalse($csrf->isTokenValid());
+    }
+    // Verifie que le token est bien supprimé après usage
+    // Retourne True si le token est valide par rapport ce qui est envoyé
+    public function test_csrfSupprimeApresUsage():void{
 
         $token = bin2hex(random_bytes(32));
 
         //Crée un faux objet Session qui retourne le token
         $session = $this->createMock(SessionInterface::class);
         $session->expects($this->once())
-                ->method('get')
-                ->willReturn(['token'=>$token,
-        ]);
-        //Crée un faux objet Request qui retourne le token envoyé par le formulaire
+            ->method('get')
+            ->willReturn(['token'=>$token,
+            ]);
+        //Verifie que remove est appelé qu'une fois
+        $session->expects($this->once())
+                ->method('remove');
+
         $request = $this->createMock(RequestInterface::class);
         $request->expects($this->once())
                 ->method('getPost')
