@@ -8,7 +8,6 @@ use App\Helpers\Csrf;
         <h3 style="margin:0 0 1rem 0;">Nouveau client</h3>
 
         <form id="form-nouveau-client" method="POST">
-            <?= Csrf::field() ?>
             <div style="display:flex; flex-direction:column; gap:1rem;">
 
                 <div>

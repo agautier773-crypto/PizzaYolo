@@ -4,7 +4,8 @@ namespace App\Core;
 
 use App\Core\Controller;
 
-class Session{
+class Session
+{
     private static ?Session $instance = null;
     public static function getInstance (){
         if (self::$instance === null){

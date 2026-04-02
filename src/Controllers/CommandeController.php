@@ -8,6 +8,9 @@ use App\Core\Session;
 use App\Core\View;
 use App\Core\Wizardvalidator;
 use App\Enum\Etat_commande;
+use App\Helpers\Csrf;
+use App\Helpers\Services\CsrfSession;
+use App\Helpers\Services\Request;
 use App\Models\Client;
 use App\Models\Commande;
 use App\Models\CommandePizza;
@@ -92,13 +95,14 @@ class CommandeController extends Controller{
         $commande = new Commande();
         $clients = (new Client())->findAll();
         $pizza = (new Pizza())->findAll();
+        $csrf = new Csrf(new CsrfSession(), new Request());
 
         View::render("commande.form", [
             'commande'=>$commande,
             'clients'=>$clients,
             'pizza'=>$pizza,
+            'csrf'=>$csrf,
         ]);
-
     }
     /**
      * @throws \Exception

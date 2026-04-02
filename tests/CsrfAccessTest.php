@@ -3,26 +3,43 @@
 namespace Tests;
 use App\Core\Middlewares;
 use App\Helpers\Csrf;
+use App\Helpers\Interfaces\SessionInterface;
+use App\Helpers\Interfaces\RequestInterface;
 
 class CsrfAccessTest extends \PHPUnit\Framework\TestCase{
 
-    /**
-     * @throws \Exception
-     */
-    public function test_csrfAccess(){
+    // Si la session ne contient pas de token, isTokenValid retourne false
+    public function test_csrfAccessAbsent():void{
 
-        session_start();
-        $_SESSION = [];
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $session = $this->createMock(SessionInterface::class);
+        $session->expects($this->once())
+                ->method('get')
+                ->willReturn(null);
 
-        $token = Csrf::generateToken();
+        $request = $this->createStub(RequestInterface::class);
 
-        $_POST = [];
-        $isValid = Csrf::isTokenValid();
-        $this->assertFalse($isValid, "La requete doit échouer");
+        $csrf = new Csrf($session, $request);
+        $this->assertFalse($csrf->isTokenValid());
+    }
 
-        $_POST['csrf_token'] = $token;
-        $isValid = Csrf::isTokenValid();
-        $this->assertTrue($isValid, "La requete doit réussir avec token valide");
+    // Si la session contient un token et form a le meme isTokenValid doit retourner True
+    public function test_csrfAccessValide():void{
+
+        $token = bin2hex(random_bytes(32));
+
+        //Crée un faux objet Session qui retourne le token
+        $session = $this->createMock(SessionInterface::class);
+        $session->expects($this->once())
+                ->method('get')
+                ->willReturn(['token'=>$token,
+        ]);
+        //Crée un faux objet Request qui retourne le token envoyé par le formulaire
+        $request = $this->createMock(RequestInterface::class);
+        $request->expects($this->once())
+                ->method('getPost')
+                ->willReturn($token);
+
+        $csrf = new Csrf($session, $request);
+        $this->assertTrue($csrf->isTokenValid());
     }
 }

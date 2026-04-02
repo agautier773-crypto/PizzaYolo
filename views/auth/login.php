@@ -120,7 +120,7 @@
 <!-- Auth card -->
 <div class="auth-wrapper">
     <form class="auth-card" action="/login" method="POST">
-        <?php \App\Helpers\Csrf::field() ?>
+        <?= $csrf->field() ?>
         <h5>Se connecter</h5>
 
         <div class="mb-3">
