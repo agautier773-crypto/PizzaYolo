@@ -7,13 +7,19 @@ use App\Core\Controller;
 use App\Core\Session;
 use App\Core\View;
 use App\Core\WizardValidator;
+use App\Helpers\Csrf;
+use App\Helpers\Services\CsrfSession;
+use App\Helpers\Services\Request;
 
 class AuthController extends Controller
 {
     //Affiche le formulaire de connexion
     public function login(): void
     {
-        View::render("auth.login");
+        $csrf = new Csrf(new CsrfSession(), new Request());
+        View::render("auth.login", [
+            'csrf' => $csrf
+        ]);
     }
 
     // Valide les identifiants soumis et try l'authentification employé

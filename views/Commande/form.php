@@ -1,7 +1,6 @@
 <?php
 
 use App\Helpers\Csrf;
-
 ?>
 <style>
     .content { max-width: 520px; margin: 0 auto; padding: 2rem 1.5rem 0; }
@@ -138,7 +137,7 @@ use App\Helpers\Csrf;
 <!-- Form client -->
     <div class="card">
         <form action="/create" method="POST">
-            <?= Csrf::field() ?>
+            <?= $csrf->field() ?>
             <div class="ligne" style="margin-bottom:1rem;">
                 <label for="id_client">Client</label>
                 <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -180,9 +179,9 @@ use App\Helpers\Csrf;
                         </select>
                     </div>
                     <div class="qty-wrap">
-                        <button type="button" class="qty-btn" onclick="chgQty(this,-1)">−</button>
+                        <button type="button" class="qty-btn qty-minus">−</button>
                         <input type="number" name="pizzas[0][quantite]" class="qty-input" value="1" min="1" max="20" readonly/>
-                        <button type="button" class="qty-btn" onclick="chgQty(this,1)">+</button>
+                        <button type="button" class="qty-btn qty-plus">+</button>
                     </div>
                 </div>
             </div>
@@ -209,7 +208,46 @@ use App\Helpers\Csrf;
 </div>
 
 <script>
-    //fonction appelé clique sur + ou -, additionne au delta et recalcul du montant
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Boutons quantité (fonctionne aussi pour les clones)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('qty-minus')) chgQty(e.target, -1);
+            if (e.target.classList.contains('qty-plus'))  chgQty(e.target, 1);
+        });
+
+        // Attache le recalcul sur la première ligne
+        const firstSelect = document.querySelector('#lignes-containers .ligne select');
+        if (firstSelect) firstSelect.addEventListener('change', updateTotal);
+
+        // Soumission du formulaire client
+        document.getElementById('form-nouveau-client').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            formData.append('csrf_token', document.querySelector('[name="csrf_token"]').value);
+
+            fetch('/api/clients', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('id_client');
+                    const option = document.createElement('option');
+                    option.value = data.id_client;
+                    option.textContent = data.nom;
+                    select.appendChild(option);
+                    select.value = data.id_client;
+                    closeModalClient();
+                })
+                .catch(err => console.error('Erreur fetch:', err));
+        });
+
+        updateTotal();
+    });
+
     function chgQty(btn, delta) {
         const input = btn.closest('.qty-wrap').querySelector('.qty-input');
         const v = parseInt(input.value || '1', 10);
@@ -219,119 +257,56 @@ use App\Helpers\Csrf;
 
     let ligneIndex = 1;
 
-    // On copie la premiere ligne de pizza
     function addLigne() {
         const container = document.getElementById('lignes-containers');
         const first     = container.querySelector('.ligne');
         const clone     = first.cloneNode(true);
-
         const i = ligneIndex++;
         clone.setAttribute('data-index', i);
 
-        // permet la construction d'un tableau pour le serveur
-        // regex pour réindexer les champs du formulaire
-        clone.querySelectorAll('[name]').forEach(function (el) {
+        clone.querySelectorAll('[name]').forEach(function(el) {
             el.name = el.name.replace(/\[\d+\]/, '[' + i + ']');
-            if (el.tagName === 'SELECT') {
-                el.selectedIndex = 0;
-            }
-            if (el.type === 'number') {
-                el.value = 1;
-            }
-
+            if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            if (el.type === 'number') el.value = 1;
         });
-        // Suppression d'une ligne pizza
-        // recalcule le total quand on change la pizza
+
         clone.querySelector('select').addEventListener('change', updateTotal);
 
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.textContent = '✕';
         removeBtn.className = 'btn-remove-row';
-        removeBtn.onclick = function () {
-            clone.remove();
-            updateTotal();
-        };
+        removeBtn.onclick = function() { clone.remove(); updateTotal(); };
         clone.appendChild(removeBtn);
 
         container.appendChild(clone);
         updateTotal();
     }
 
-    //Mise a jour dynamique du prix total
     function updateTotal() {
         const lignes = document.querySelectorAll('#lignes-containers .ligne');
         let total = 0;
 
-        lignes.forEach(function (ligne) {
+        lignes.forEach(function(ligne) {
             const select   = ligne.querySelector('select');
             const qtyInput = ligne.querySelector('.qty-input');
-
             if (!select || !qtyInput) return;
 
-            //recupere le prix du produit
             const option = select.options[select.selectedIndex];
             const price  = parseFloat(option.getAttribute('data-price') || '0');
             const qty    = parseInt(qtyInput.value || '0', 10);
-
             total += price * qty;
         });
 
         document.getElementById('montant').value = total.toFixed(2);
     }
 
-    // attache le recalcul sur la première ligne
-    document.addEventListener('DOMContentLoaded', function () {
-        const firstSelect = document.querySelector('#lignes-container .ligne select');
-        if (firstSelect) {
-            firstSelect.addEventListener('change', updateTotal);
-        }
-        updateTotal();
-    });
-
-    //ouverture de la modal
     function openModalClient() {
-
-        const modal = document.getElementById('modal-client');
-        modal.style.display = 'flex';
+        document.getElementById('modal-client').style.display = 'flex';
     }
 
-    //fermeture de la modal
     function closeModalClient() {
-        const modal = document.getElementById('modal-client');
-        modal.style.display = 'none';
+        document.getElementById('modal-client').style.display = 'none';
     }
-    // cette fonction permet de soumettre le formulaire client sans recharger la page et avoir accès direct au nouveau client
-    //on bloque le rechargement du formulaire
-    document.getElementById('form-nouveau-client').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        //recup les données envoyées
-        const formData = new FormData(this);
-        formData.append('csrf_token', document.querySelector('[name="csrf_token"]').value);
-        //Envoie des données au serveur
-        fetch('/api/clients', {
-            method: 'POST',
-            body: formData
-        })
-            // on recupere la reponse json du controller
-            .then(response => response.json())
-            .then(data => {
-                // Crée et ajoute le nouveau client dans le select
-                const select = document.getElementById('id_client');
-                const option = document.createElement('option');
-                option.value = data.id_client;
-                option.textContent = data.nom;
-                select.appendChild(option);
-
-                // Sélectionne automatiquement le nouveau client
-                select.value = data.id_client;
-
-                closeModalClient();
-            })
-            .catch(err => {
-                console.error('Erreur fetch:', err)
-            });
-    });
 
 </script>

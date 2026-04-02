@@ -3,55 +3,67 @@
 namespace App\Helpers;
 
 use App\Core\Session;
+use App\Helpers\Interfaces\SessionInterface;
+use App\Helpers\Interfaces\RequestInterface;
 use Exception;
 
 class Csrf{
 
     private const SESSION_TOKEN_KEY = 'csrf_token';
-
     private const FIELD_NAME = 'csrf_token';
 
-    /**
-     * @throws Exception
-     * @throws Exception
-     */
-    public static function generateToken():string{
-        Session::isStarted();
+    private SessionInterface $session;
+    private RequestInterface $request;
 
+    public function __construct(SessionInterface $session, RequestInterface $request){
+        $this->session = $session;
+        $this->request = $request;
+    }
+    public function generateToken():string{
         $token = bin2hex(random_bytes(32));
-        $_SESSION[self::SESSION_TOKEN_KEY] = [
+        $this->session->set(self::SESSION_TOKEN_KEY,[
             'token' => $token,
-        ];
+            'expires_at' => time() + 3600,
+        ]);
         return $token;
     }
 
-    /**
-     * @throws Exception
-     */
-    public static function getToken(): string{
-        Session::isStarted();
-
+    public function getToken(): string{
         if(!self::isTokenValid()){
-            return self::generateToken();
+            return $this->generateToken();
         }
-        return $_SESSION[self::SESSION_TOKEN_KEY]['token'];
+        return $this->session->get(self::SESSION_TOKEN_KEY)['token'];
     }
 
-    /**
-     * @throws Exception
-     */
-    public static function field():string{
-        $token = self::getToken();
+    public function field():string{
+        $token = $this->getToken();
         $fieldName = self::FIELD_NAME;
 
-        return "<input type='hidden' value='{$token}' name='{$fieldName}'";
+        return "<input type='hidden' value='{$token}' name='{$fieldName}' />";
     }
 
-    public static function isTokenValid():bool{
-        if(!isset($_SESSION[self::SESSION_TOKEN_KEY]['token'])){
+    public function isTokenValid():bool{
+        // Récupere les données du token en session
+        $sessionData = $this->session->get(self::SESSION_TOKEN_KEY);
+        // verifie qu'il existe
+        if(!isset($sessionData['token'])){
             return false;
         }
-        return true;
+        // Recupere le token envoyé dans le formulaire
+        $postToken = $this->request->getPost(self::FIELD_NAME);
+
+        // Vérifie que le formulaire a bien envoyé un token
+        if($postToken === null){
+            return false;
+        }
+        //Compare les deux tokens
+        $isValid = $sessionData['token'] === $postToken;
+
+        // Si valide supprime le token pour qu'il ne puisse pas être réutilisé
+        if($isValid){
+            $this->session->remove(self::SESSION_TOKEN_KEY);
+        }
+        return $isValid;
     }
 
 }
