@@ -38,7 +38,8 @@ class ClientController extends \App\Core\Controller
 
         $client->save();
 
-        // renvoie du Json au js
+        // réponse JSON envoyé au fetch
+        //retourne uniquement les champs nécessaires
         http_response_code(200);
         echo json_encode(['id_client' => $client->id_client, 'nom' => $client->nom]);
         exit;
