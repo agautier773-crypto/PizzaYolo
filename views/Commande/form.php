@@ -225,9 +225,10 @@ use App\Helpers\Csrf;
         document.getElementById('form-nouveau-client').addEventListener('submit', function(e) {
             e.preventDefault();
 
+            // Récupère les données saisies et ajoute le token CSRF
             const formData = new FormData(this);
             formData.append('csrf_token', document.querySelector('[name="csrf_token"]').value);
-
+            // Envoie de la requête à l'API
             fetch('/api/clients', {
                 method: 'POST',
                 body: formData
@@ -248,15 +249,17 @@ use App\Helpers\Csrf;
         updateTotal();
     });
 
+    // Incrémente ou décrémente quantité d'une ligne 20 max
     function chgQty(btn, delta) {
         const input = btn.closest('.qty-wrap').querySelector('.qty-input');
         const v = parseInt(input.value || '1', 10);
         input.value = Math.min(20, Math.max(1, v + delta));
         updateTotal();
     }
-
+    // Génère des index uniques
     let ligneIndex = 1;
 
+    //AJoute une nouvelle ligne de commande en clonant celle existante
     function addLigne() {
         const container = document.getElementById('lignes-containers');
         const first     = container.querySelector('.ligne');
@@ -264,14 +267,17 @@ use App\Helpers\Csrf;
         const i = ligneIndex++;
         clone.setAttribute('data-index', i);
 
+        //mets à jour les attributs
         clone.querySelectorAll('[name]').forEach(function(el) {
             el.name = el.name.replace(/\[\d+\]/, '[' + i + ']');
             if (el.tagName === 'SELECT') el.selectedIndex = 0;
             if (el.type === 'number') el.value = 1;
         });
 
+        // Attache l'évenement recalcul sur le select nouvelle ligne
         clone.querySelector('select').addEventListener('change', updateTotal);
 
+        //créer et attache btn suppr
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.textContent = '✕';
@@ -283,6 +289,7 @@ use App\Helpers\Csrf;
         updateTotal();
     }
 
+    // Recalcule le montant total en parcourant toutes les lignes de commandes
     function updateTotal() {
         const lignes = document.querySelectorAll('#lignes-containers .ligne');
         let total = 0;
@@ -301,10 +308,12 @@ use App\Helpers\Csrf;
         document.getElementById('montant').value = total.toFixed(2);
     }
 
+    //Ouvre la modal
     function openModalClient() {
         document.getElementById('modal-client').style.display = 'flex';
     }
 
+    //ferme la modal
     function closeModalClient() {
         document.getElementById('modal-client').style.display = 'none';
     }

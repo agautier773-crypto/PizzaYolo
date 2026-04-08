@@ -50,3 +50,8 @@ Cela lancera les services suivants :
 - Utilisateur MySQL : `lambdas`  
 - Mot de passe : `lambdas`  
 - Base de données : `PizzaYolo`
+
+**Identifiants de connexion :**
+- Interface Caisse / Employé : Maxime, MdP : azerty
+- Interface Cuisine / Employé : Keven, MdP : azerty
+- Interface Patron / Employé : Philippe, MdP : azerty

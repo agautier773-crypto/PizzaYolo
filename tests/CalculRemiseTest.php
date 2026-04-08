@@ -21,7 +21,5 @@ class CalculRemiseTest extends TestCase
             $montant = $commande->appliquerRemise(30.00, nbCommandes: $nbCommandes, totalPizzas: 5);
             $this->assertEquals(27.00, $montant);
         }
-
-
     }
 }
